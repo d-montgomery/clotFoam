@@ -177,25 +177,6 @@ boundaryField
 
             }
             
-            // Other ideas I had for determining the direction of delta
-            //Pout << "\nnf = ("<< nf[faceI].x()<<","<<nf[faceI].y()<<")"<< endl; 
-            //Pout << "deltaVec = ("<< deltaVec[faceI].x()/mag(deltaVec[faceI])<<","<<deltaVec[faceI].y()/mag(deltaVec[faceI])<<")"<< endl; 
-            //Pout << "DeltaI = " << DeltaI << endl;
-            //Pout << "K = " << K << endl;
-            //Pout << "Dc*DeltaI = " << Dc*DeltaI << endl;
-            //const label patchID = patch().index();
-            //const vectorField& Cf = patch().Cf();
-            //const vectorField deltaVec = patch().delta();
-            //const fvMesh& mesh = refCast<const fvMesh>(db());
-            //const volVectorField& C = mesh.C();         // Cell center coordinates
-            //const surfaceVectorField& Cf = mesh.Cf();   // Face center coordinates
-            //Info << "nf = ("<< nf[faceI].x()<<","<<nf[faceI].y()<<")"<< endl; 
-            //Info << "E0[faceI] = " << E0[faceI] << endl;
-            //Info << "K = " << K << endl;
-            //Info << "F = " << F << endl;
-            //Info << "DeltaI = " << DeltaI << endl;
-            //Info << " dn = " << 1/DeltaI << endl;
-            //Info << "S1_f = " << field_f[faceI] << endl;
         #};
 
     }
