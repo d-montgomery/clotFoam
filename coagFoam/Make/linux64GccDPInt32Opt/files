@@ -1,3 +1,0 @@
-SOURCE += coagFoam.C
-
-EXE = $(FOAM_USER_APPBIN)/coagFoam
