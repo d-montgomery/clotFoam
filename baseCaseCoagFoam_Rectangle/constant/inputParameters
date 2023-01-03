@@ -1,0 +1,136 @@
+/*--------------------------------*- C++ -*----------------------------------*\
+  =========                 |
+  \\      /  F ield         | OpenFOAM: The Open Source CFD Toolbox
+   \\    /   O peration     | Website:  https://openfoam.org
+    \\  /    A nd           | Version:  9
+     \\/     M anipulation  |
+-------------------------------------------------------------------------------
+Description
+   This file contains all of the necessary input parameters used in coagFoam.
+   All of the
+\*---------------------------------------------------------------------------*/
+FoamFile
+{
+    format      ascii;
+    class       dictionary;
+    location    "constant";
+    object      inputParameters;
+}
+// * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * //
+/*-------------------------*- Input Parameters -*----------------------------*\
+This file contains all of the necessary input parameters used in the simulation
+\*---------------------------------------------------------------------------*/
+// * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * //
+
+/* ------------------------------------------------------------------------- *\
+   Geometry and Mesh Parameters
+\*---------------------------------------------------------------------------*/
+// Lengths of the T Domain (all in mm, don't forget a decimal!)
+x_max 240.0e-03; // width of left and right channel 
+y_max 60.0e-03; // total length of vessel 
+w_inj 90.0e-03; // length of injury from rectangle
+
+// Mesh parameters integers: these should match the rectangular domain
+Nx 128; // x cells in upper part of vessel 
+Ny 32; // x cells in upper part of vessel 
+
+// Mesh parameters in z-direction
+Zdir 10e-03; // depth in z-direction
+Nz 1; // # of cells in z-dir
+
+/* ------------------------------------------------------------------------- *\
+   Fluid Parameters
+\*---------------------------------------------------------------------------*/
+nu 2.62507; // kinematic viscosity of fluid [mm^2 / s]
+C_CK 1.0e+06; // Carman-Kozeny relation constant [1 / mm^2]
+inletShearRate 1000.0; // inlet shear rate [1/s]
+
+/* ------------------------------------------------------------------------- *\
+   Pressure Parameters (kinematic pressure)
+\*---------------------------------------------------------------------------*/
+Pv0 0.0; // outlet kinematic pressure [mm^2 / s^2]
+
+/* ------------------------------------------------------------------------- *\
+   Platelet Parameters
+\*---------------------------------------------------------------------------*/
+num_plts 4; // Total Number of platelet species (Integer)
+num_plts_mobile 2; // Number of mobile platelet species (for transport solve)
+M_rxn 2; // Number of time steps for reactions solve: h_react = dt / M_react
+Pdiam 3e-03; // Diameter of one platelet [mm]
+Pmax 6.67e+07; // Maxiumum packing density [1 / mm^3]
+Dp 2.5e-05; // Diffusion rate for platelets [mm^2 / s]
+Plt_0 2.5e+05; // Mobile platelet inlet number density [1 / mm^3]
+t0_Plt 0.005; // When the platelets start to enter the domain
+tf_Plt 0.02; // When the platelets reach Plt_0 at inlet
+
+// Platelet Adhesion Params
+kadh_val 3.3212e-08; // rate of adhesion [mm^3 / s]
+kadh_len #calc "$w_inj"; // Length of the adhesion region [mm]
+
+// Platelet Cohesion Params
+KcohPmax 1.0e+4; // Cohesion constant times Pmax [1/s]
+eta_t 0.1; // threshold value for g(eta) [nondim]
+eta_ast 0.4; // eta_ast_val + eta_t_val = 0.25 - 0.75 [nondim]
+
+// Platelet Activation Params
+kADP_Pla 0.34; // Platelet activation rate by ADP [1/s]
+ke2_Pla 0.5; // Platelet activation rate by thrombin [1/s]
+ADP_ast 2.0e-03; // Critical concentration of ADP [nanomol / mm^3]
+e2_ast 1.0e-06; // Critical concentration of thrombin [nanomol / mm^3]
+
+/* ------------------------------------------------------------------------- *\
+   ADP Parameters
+\*---------------------------------------------------------------------------*/
+D_ADP 5.0e-04; // Diffusion rate for ADP [mm^2 / s]
+ADP_rel 2.0e-08; // Total ADP released [nanomol/platlet]
+sigma_dt 0.25; // How often the sigma_release function is calculated [s]
+sigma_Tf 6; // How far back the integration goes for sigma_release [s]
+
+/* ------------------------------------------------------------------------- *\
+   Chemical Reaction Parameters
+\*---------------------------------------------------------------------------*/
+num_seBound 2; // Number of SE-bound chem. species (integer)
+num_fluidPhase 4; // Number of fluid-phase chem. species (integer)
+num_pltBound 3; // Number of platelet-bound chem. species (integer)
+
+t0_chem $t0_Plt; // When the chemicals start to enter the domain
+tf_chem $tf_Plt; // When the chemicals reach their full IC at inlet
+
+// Avogadro's Constant
+N_Avo 6.02214076e+14; // [1 / nanomol]
+
+// Diffusion rate for fluidPhase chemicals
+Dc 5.0e-05; // [mm^2/s]
+
+// Initial concentrations
+E0_IC 1.5e-07; // Concentration of E0 on SE Wall [nanomol / mm^2]
+S1_IC 1.7e-04; // Concentration of S1 at inlet [nanomol / mm^3]
+S2_IC 1.4e-03; // Concentration of S2 at inlet [nanomol / mm^3]
+
+// Number of binding sites on platelet surface for specific chems
+N_E1 2700.0;
+N_S2 2000.0;
+
+// Kinetic Rates
+Kc0_on 8.95e+03; // On-rate for C0 [mm^3 / nanomol / s]
+Kc0_off 1.0; // Off-rate for C0 [1/s]
+Kc0_cat 1.15; // Cat-rate for C0 [1/s]
+
+Ke1_on 1.0e+04; // On-rate for E1 [mm^3 / nanomol / s]
+Ke1_off 2.5e-02; // Off-rate for E1 [1/s]
+
+Ks2_on 1.0e+04; // On-rate for S2 [mm^3 / nanomol / s]
+Ks2_off 5.9; // Off-rate for S2 [1/s]
+
+Kc1_on 1.03e+05; // On-rate for C1 [mm^3 / nanomol / s]
+Kc1_off 1.0; // Off-rate for C1 [1/s]
+Kc1_cat 30; // Cat-rate for C1 [1/s]
+
+/* ------------------------------------------------------------------------- *\
+   Other lengths used by multiple files (DON'T EDIT!!!!!)
+\*---------------------------------------------------------------------------*/
+// Define the left and right edges of the adhesion region
+l_edge_Adh #calc "($x_max-$w_inj)/2.0";
+r_edge_Adh #calc "($x_max+$w_inj)/2.0";
+
+// ************************************************************************* //
