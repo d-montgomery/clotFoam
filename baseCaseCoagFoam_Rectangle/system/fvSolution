@@ -14,10 +14,6 @@ FoamFile
 }
 // * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * //
 
-#include "$FOAM_CASE/constant/inputParameters"
-#include "$FOAM_CASE/system/decomposeParDict"
-
-coarsestGamg #calc "round(0.75 * $Nx / $numberOfSubdomains)";
 solvers
 {
     p
@@ -38,10 +34,7 @@ solvers
     {
         solver          GAMG;
         preconditioner  DILU;
-        mergeLevels     3;
         smoother        GaussSeidel;
-        agglomerator    faceAreaPair;
-        nCellsInCoarsestLevel $coarsestGamg;
         tolerance 1e-05;
         relTol 0.1;
     };
@@ -51,10 +44,7 @@ solvers
     {
         solver          GAMG;
         preconditioner  DILU;
-        mergeLevels     3;
         smoother        GaussSeidel;
-        agglomerator    faceAreaPair;
-        nCellsInCoarsestLevel $coarsestGamg;
         tolerance 1e-05;
         relTol 0;
     }
@@ -63,10 +53,7 @@ solvers
     {
         solver          GAMG;
         preconditioner  DILU;
-        mergeLevels     3;
         smoother        GaussSeidel;
-        agglomerator    faceAreaPair;
-        nCellsInCoarsestLevel $coarsestGamg;
         tolerance 1e-05;
         relTol 0.1;
     };
