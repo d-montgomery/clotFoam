@@ -81,13 +81,15 @@ class Species_pltBound : public Species
             const volScalarField& Pbse = Plt->input[3];
 
             // S2b
-            k[0] = Ks2_on * N_S2 * (Pba + Pbse) * S2 / N_Avo
+            k[0] = Ks2_on * (N_S2 * (Pba + Pbse) / N_Avo 
+                   -(S2b + C1))* S2 
                    -Ks2_off * S2b 
                    -Kc1_on * S2b * E1b 
                    +Kc1_off*C1;
             
             // E1b
-            k[1] = Ke1_on * N_E1 * (Pba + Pbse) * E1 / N_Avo
+            k[1] = Ke1_on * (N_E1 * (Pba + Pbse) / N_Avo 
+                   -(E1b + C1))* E1 
                    -Ke1_off * E1b
                    -Kc1_on * S2b * E1b
                    +(Kc1_off + Kc1_cat)*C1;

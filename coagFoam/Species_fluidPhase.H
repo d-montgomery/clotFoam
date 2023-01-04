@@ -78,11 +78,12 @@ class Species_fluidPhase : public Species
             k[0] = 0*k[0]; // reactions on subendothelium through BC
 
             // S2
-            k[1] = -1.*Ks2_on * N_S2 * (Pba + Pbse) * S2 / N_Avo
-                    +Ks2_off * S2b; 
+            k[1] = -1.*Ks2_on * (N_S2 * (Pba + Pbse) / N_Avo 
+                   -(S2b + C1))* S2 +Ks2_off * S2b; 
 
             // E1 (has additional reactions on SE through BC)
-            k[2] = -1.*Ke1_on * N_E1 * (Pba + Pbse) * E1 / N_Avo
+            k[2] = -1.*Ke1_on * (N_E1 * (Pba + Pbse) / N_Avo 
+                   -(E1b + C1))* E1
                    +Ke1_off * E1b;
 
             // E2
