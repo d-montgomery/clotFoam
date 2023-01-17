@@ -28,14 +28,6 @@ class Species_seBound : public Species
             fluidPhase = &fluidPhase_;
         }
 
-        void setInitialSEConc(scalar& E0_IC)
-        {   
-            forAll(k[0].boundaryField()[injuryPatchID],faceI)
-            {
-                k[0].boundaryFieldRef()[injuryPatchID][faceI] = E0_IC;
-            }
-        }
-
         // Function that edits the k's for RK4 method.  This assumes that 
         // all k's are defined as 
         //      k[i] = R_i(input) 

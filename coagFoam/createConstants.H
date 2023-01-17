@@ -225,9 +225,6 @@ dimensionedScalar Dc
     inputParameters.lookup("Dc")
 );
 
-// Initial concentration of E0 on the subendothelium
-scalar E0_IC = readScalar(inputParameters.lookup("E0_IC"));
-
 // Number of binding sites on platelet surface for specific chems
 scalar N_E1 = readScalar(inputParameters.lookup("N_E1"));
 scalar N_S2 = readScalar(inputParameters.lookup("N_S2"));

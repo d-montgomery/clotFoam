@@ -295,8 +295,6 @@ seBound.field.set
 
 // Set all necessary fields for RK method = 0 with proper dimensions
 seBound.initializeRKFields();
-seBound.setInitialSEConc(E0_IC); // Set intial concentration on Subendothelium
-
 
 /**************************************************************************
     Fluid-Phase Fields
