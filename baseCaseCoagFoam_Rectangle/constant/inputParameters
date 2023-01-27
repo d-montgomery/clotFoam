@@ -71,6 +71,7 @@ kadh_len #calc "$w_inj"; // Length of the adhesion region [mm]
 KcohPmax 1.0e+4; // Cohesion constant times Pmax [1/s]
 eta_t 0.1; // threshold value for g(eta) [nondim]
 eta_ast 0.4; // eta_ast_val + eta_t_val = 0.25 - 0.75 [nondim]
+l_D_eta #calc "2.0*$Pdiam"; // length of "diffusion" for eta [mm]
 
 // Platelet Activation Params
 kADP_Pla 0.34; // Platelet activation rate by ADP [1/s]

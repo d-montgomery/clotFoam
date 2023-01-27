@@ -25,11 +25,28 @@ boundaryField
     {
         type            codedFixedValue;
         value           uniform 0;
-        name            rampPmu_Inlet;
+        name            Pmu_nearWallProfile;
 
         code
         #{
-            // wall shear rate inverse seconds
+            // Near-wall excess platelet profile motivated by Eckstein '91
+            // Pmu = Plt_0 * C0 * s(y), 
+            // where s(y) = 1 + K*R(y)^18 * (1 - R), 
+            //       R(y) = abs(y - r) / r, 
+            //          r = radius of vessel,
+            //       1/C0 = 1 / d * integral(s(y) dy),
+            //          d = diamter of vessel
+            //          K : determines amplitude of shape
+            // Use with shear rates of 500, 1000, 1500 1/s
+
+            //using namespace std;
+            const vectorField& Cf = patch().Cf();  // mesh values
+            scalarField& field = *this; // field at boundary
+            int n =  patch().size(); // num elements on boundary
+            scalar s [n] = {};  // for storing the shape function 
+            scalar h [n] = {}; // for integration
+
+            // Normal concentration of platelets at inlet  
             const scalar Plt_0
                 = readScalar
                     (
@@ -38,32 +55,84 @@ boundaryField
                             "inputParameters"
                         ).lookup("Plt_0")
                     );
-
-            const scalar t_start
-                = readScalar
-                    (
-                        db().lookupObject<IOdictionary>
-                        (
-                            "inputParameters"
-                        ).lookup("t0_Plt")
-                    );
-            const scalar t_stop
-                = readScalar
-                    (
-                        db().lookupObject<IOdictionary>
-                        (
-                            "inputParameters"
-                        ).lookup("tf_Plt")
-                    );
-            scalar m = Plt_0 / (t_stop - t_start);
-
-            operator==
+            
+            // wall shear rate inverse seconds
+            const scalar shr_rt = readScalar
             (
-                max(
-                        0.0, 
-                        min(Plt_0, m*this->db().time().value() - m*t_start)
-                    )
+                db().lookupObject<IOdictionary>
+                (
+                    "inputParameters"
+                ).lookup("inletShearRate")
             );
+
+            // Height of the vessel (may need to change for other domains)
+            const scalar y_max
+                = readScalar
+                    (
+                        db().lookupObject<IOdictionary>
+                        (
+                            "inputParameters"
+                        ).lookup("y_max")
+                    );
+
+            // Determine scale K for shape function (amplitude near wall)
+            scalar K = 330.0;
+            if (shr_rt == 500.0)
+            {
+                K = 202.0; // -> Peak-to-centre ratio ~5
+            }
+            if (shr_rt == 1000.0)
+            {
+                K = 330.0; // -> Peak-to-centre ratio ~7.5
+            }
+            if (shr_rt == 1500.0)
+            {
+                K = 455.0; // -> Peak-to-centre ratio ~10
+            }
+
+            // Get initial shape of profile
+            scalar r = y_max/2.0; // vessel radius (may need to change for other domains)
+            scalar y_prev = 0; // previous y-val for dy calcs
+            int i = 0;
+            forAll(Cf,faceI)
+            {
+                scalar y = Cf[faceI][1];
+                scalar R = std::abs(y - r) / r;
+                // Initial shape (not scaled correctly yet)
+                s[i] = 1. + K * pow( R, 18) * (1 - R);
+                h[i] = y - y_prev;
+                y_prev = y;
+                i = i+1; 
+            }
+
+            // Integrate the profile with trapezoid rule
+            scalar intgrl_s = 0;
+            for(int k = 0; k < n-1; k++)
+            {
+                intgrl_s = intgrl_s + 0.5 * h[k+1] * ( s[k] + s[k+1] );
+            }
+
+            // Set the field values at the inlet
+            scalar C0 = y_max/intgrl_s;
+            i = 0;
+            forAll(Cf,faceI)
+            {
+                field[faceI] = Plt_0 * C0 * s[i]; 
+                i = i+1;
+            }
+
+            /*
+            // check that the integral of the profile = integral Plt_0
+            scalar intconst = Plt_0 * y_max;
+            scalar intgrl_srofile = 0;
+            for(int k = 0; k < n-1; k++)
+            {
+                intgrl_profile = intgrl_profile + 0.5 * h[k+1] * Plt_0 * C0(s[k]+s[k+1]);
+            }
+            Info << "intconst = " << intconst << endl;
+            Info << "intgrl_profile = " << intgrl_srofile << endl;
+            */
+
         #};
     }
     

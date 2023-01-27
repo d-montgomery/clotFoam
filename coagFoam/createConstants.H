@@ -126,6 +126,13 @@ dimensionedScalar eta_ast
     inputParameters.lookup("eta_ast")
 );
 
+// Virtual substance diffusion length 
+dimensionedScalar l_D_eta
+(
+    "l_D_eta",
+    dimLength,
+    inputParameters.lookup("l_D_eta")
+);
 
 // Calculate g0 for the binding affinity function g(eta)
 dimensionedScalar g0

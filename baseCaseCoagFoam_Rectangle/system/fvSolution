@@ -61,11 +61,12 @@ solvers
     // Fluid Phase Chemeical Species
     "(fluidPhase_S1|fluidPhase_S2|fluidPhase_E1|fluidPhase_E2)"
     {
-        solver          smoothSolver;
-        smoother        symGaussSeidel;
-        tolerance       1e-05;
-        relTol          0;
-    }
+        solver          GAMG;
+        preconditioner  DILU;
+        smoother        GaussSeidel;
+        tolerance 1e-05;
+        relTol 0.1;
+    };
 }
 
 PISO
