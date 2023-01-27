@@ -1,0 +1,191 @@
+/*--------------------------------*- C++ -*----------------------------------*\
+  =========                 |
+  \\      /  F ield         | OpenFOAM: The Open Source CFD Toolbox
+   \\    /   O peration     | Website:  https://openfoam.org
+    \\  /    A nd           | Version:  9
+     \\/     M anipulation  |
+\*---------------------------------------------------------------------------*/
+FoamFile
+{
+    format      ascii;
+    class       volScalarField;
+    object      fluidPhase_S1;
+}
+// * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * //
+
+#include "$FOAM_CASE/constant/inputParameters"
+
+dimensions      [0 -3 0 0 1 0 0];
+
+internalField   uniform 0;
+
+boundaryField
+{
+    inletVessel
+    {
+        type            codedFixedValue;
+        value           uniform $S1_IC;
+        name            rampS1_Inlet;
+
+        code
+        #{
+            // wall shear rate inverse seconds
+            const scalar S1_IC
+                = readScalar
+                    (
+                        db().lookupObject<IOdictionary>
+                        (
+                            "inputParameters"
+                        ).lookup("S1_IC")
+                    );
+
+                    const scalar t_start
+                    = readScalar
+                        (
+                            db().lookupObject<IOdictionary>
+                            (
+                                "inputParameters"
+                            ).lookup("t0_chem")
+                        );
+                const scalar t_stop
+                    = readScalar
+                        (
+                            db().lookupObject<IOdictionary>
+                            (
+                                "inputParameters"
+                            ).lookup("tf_chem")
+                        );
+                scalar m = S1_IC / (t_stop - t_start);
+    
+                operator==
+                (
+                    max(
+                            0.0, 
+                            min(S1_IC, m*this->db().time().value() - m*t_start)
+                        )
+                );
+        #};
+
+    }
+    
+    outletVessel
+    {
+        type            zeroGradient;
+    }
+
+    fixedWalls
+    {
+        type            zeroGradient;
+    }
+    
+    injuryWalls
+    {
+        type            codedFixedValue;
+        value           uniform 0.0;
+        name            robinBC_S1;
+
+        code
+        #{
+            /* * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *\
+            Robin BC of form:
+                 -D d/dn(field) = K * field + F
+
+            The first order discretization is:
+                -D * (field_f - field_c) / dn = K * field_f + F.
+            
+            Solving for field_f provides:
+                field_f = \Delta * D / (\Delta * D + K) * field_c 
+                          - 1 / (\Delta * D + K) * F, 
+            where 
+                field_f = the value on the face,
+                field_c = the value at the cell center
+                \Delta = 1/dn = deltaCoeffs (in OpenFOAM)
+            Note that the deltaCoeffs are always positive, which doesn't take
+            into account the direction of the vector from the cell center to 
+            the cell face.  Therefore, we define 
+                DeltaI = vector(\Delta, \Delta, 0) & nf
+            for 2d orthogonal meshes.  The & is the dot product, and nf is the 
+            face-normal vector.
+            \* * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * */ 
+            
+            // Reference to this field on face (f) and center (c)
+            scalarField& field_f = *this;
+            const tmp<scalarField>& field_c = patchInternalField();
+
+            // face-normal vector on patch
+            //const vectorField& nf = patch().nf();
+
+            // Lookup diffusion rate and kinetic rates 
+            const scalar Dc = readScalar
+            (
+                db().lookupObject<IOdictionary>
+                (
+                    "inputParameters"
+                ).lookup("Dc")
+            );
+
+            const scalar Kc0_on = readScalar
+            (
+                db().lookupObject<IOdictionary>
+                (
+                    "inputParameters"
+                ).lookup("Kc0_on")
+            );
+
+            const scalar Kc0_off = readScalar
+            (
+                db().lookupObject<IOdictionary>
+                (
+                    "inputParameters"
+                ).lookup("Kc0_off")
+            );
+
+            // Lookup necessary fields for reaction at boundary
+            const scalarField& E0
+            (
+                patch().lookupPatchField<volScalarField, scalar>("seBound_E0")
+            );
+            const scalarField& C0
+            (
+                patch().lookupPatchField<volScalarField, scalar>("seBound_C0")
+            );
+
+            // Get the direction of the deltaCoeffs
+            const vectorField deltaVec = patch().delta();
+
+            // Loop for all faces on within this patch            
+            forAll(field_f, faceI)
+            {
+                // !!!! Edit these values !!!!
+                scalar K = -Kc0_on * E0[faceI];
+                scalar F = Kc0_off * C0[faceI];
+
+                // !!!! Don't edit below this line !!!!
+                // ---------------------------------------------------------------
+
+                // Get deltaCoeffs (note always positive) 
+                // must adjust sign with normalized delta vector 
+                // (only works for orthogonal mesh)
+                scalar DeltaI = this->patch().deltaCoeffs()[faceI];
+                DeltaI = vector(DeltaI,DeltaI,0) & deltaVec[faceI] / mag(deltaVec[faceI]);
+
+                scalar denom = Dc * DeltaI + K;
+                
+                // Value at boundary
+                field_f[faceI] =  DeltaI * Dc / denom * field_c.ref()[faceI]
+                                  - 1.0/denom * F;
+
+            }
+            
+        #};
+
+    }
+    
+
+    frontAndBack
+    {
+        type            empty;
+    }
+}
+
+// ************************************************************************* //

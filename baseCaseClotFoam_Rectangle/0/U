@@ -1,0 +1,88 @@
+/*--------------------------------*- C++ -*----------------------------------*\
+  =========                 |
+  \\      /  F ield         | OpenFOAM: The Open Source CFD Toolbox
+   \\    /   O peration     | Website:  https://openfoam.org
+    \\  /    A nd           | Version:  9
+     \\/     M anipulation  |
+\*---------------------------------------------------------------------------*/
+FoamFile
+{
+    format      ascii;
+    class       volVectorField;
+    object      U;
+}
+// * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * //
+
+dimensions      [0 1 -1 0 0 0 0];
+
+internalField   uniform (0 0 0);
+
+boundaryField
+{
+
+    inletVessel 
+    {
+
+        type            codedFixedValue;
+        value           uniform (0 0 0);
+	    name  	        parabolicVelocity;
+    
+
+        code
+        #{
+
+            const vectorField& Cf = patch().Cf();
+            vectorField& field = *this;
+
+            // wall shear rate inverse seconds
+            const scalar shr_rt = readScalar
+            (
+                db().lookupObject<IOdictionary>
+                (
+                    "inputParameters"
+                ).lookup("inletShearRate")
+            );
+        
+
+
+            // height of the vessel [mm]  
+            const scalar y_max = readScalar
+            (
+                db().lookupObject<IOdictionary>
+                (
+                    "inputParameters"
+                ).lookup("y_max")
+            );
+     
+            forAll(Cf, faceI) // Loop over all patch faces
+            {
+                const scalar y = Cf[faceI][1];
+                const scalar parab =  -1.0*shr_rt/y_max*pow(y-y_max/2.0,2) + shr_rt*y_max/4.0;
+                field[faceI] = vector(parab,0,0); // Set the x-comp only
+            }
+        #};
+    }
+    
+    
+    outletVessel
+    {
+        type            zeroGradient;
+    }
+    
+    fixedWalls
+    {
+        type            noSlip;
+    }
+    
+    injuryWalls
+    {
+        type            noSlip;
+    }
+    
+    frontAndBack
+    {
+        type            empty;
+    }
+}
+
+// ************************************************************************* //
