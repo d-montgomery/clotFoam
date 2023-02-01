@@ -101,13 +101,13 @@ The solver begins by loading the mesh, reading in constants from constant/inputP
   * Platelets Transport: transport via hindered advection-diffusion
   * Biochemicals Transport: transport fluidPhase species via advection-diffusion
   * Platelet Reactions:
-    * Update virtual substance eta
-      * FOR (int m = 0; m < M_rxn; m++ )
-        * React platelets with RK4 solver  
-        * Update platelet boundary conditions 
-      * Update volume fractions for platelets
-  6. Biochemical Reactions:
-    1. FOR (int m = 0; m < M_rxn; m++ )
+   * Update virtual substance eta
+   * FOR (int m = 0; m < M_rxn; m++ )
+     * React platelets with RK4 solver  
+   * Update mobile platelet boundary conditions 
+   * Update volume fractions for platelets Theta_B and Theta_T
+  * Biochemical Reactions:
+   * FOR (int m = 0; m < M_rxn; m++ )
       1. React biochemcials with RK4 solver  
       2. Update Species fluidPhase boundary conditions 
   7. Calculate ADP:
