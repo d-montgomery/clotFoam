@@ -98,20 +98,29 @@ The solver begins by loading the mesh, reading in constants from constant/inputP
   * Update deltaT for based on CFL for stability
   * Fluids: calculate Darcy term
   * Fluids: PISO Loop (p and U)
-  * Platelets Transport: transport via hindered advection-diffusion
-  * Biochemicals Transport: transport fluidPhase species via advection-diffusion
+  * Platelets Transport: 
+    * Calcualte hindered velocity flux phi*W:  
+      * Interpolate Theta_T to cell faces using downwind scheme
+      * Calculate W(Theta_T) for advection
+      * Calculate phi*W
+    * Calculate hindered diffusion rate Dp*W:
+      * Interpolate Theta_T to cell faces using localMax scheme
+      * Calculate W(Theta_T) for advection
+      * Calculate Dp*W
+    * Transport mobile platelets via hindered advection-diffusion
+  * Biochemicals Transport: transport all fluidPhase species via advection-diffusion
   * Platelet Reactions:
-   * Update virtual substance eta
-   * FOR (int m = 0; m < M_rxn; m++ )
-     * React platelets with RK4 solver  
-   * Update mobile platelet boundary conditions 
-   * Update volume fractions for platelets Theta_B and Theta_T
+    * Update virtual substance eta
+    * FOR (int m = 0; m < M_rxn; m++ )
+      * React platelets with RK4 solver  
+    * Update mobile platelet boundary conditions 
+    * Update volume fractions for platelets Theta_B and Theta_T
   * Biochemical Reactions:
-   * FOR (int m = 0; m < M_rxn; m++ )
-      1. React biochemcials with RK4 solver  
-      2. Update Species fluidPhase boundary conditions 
-  7. Calculate ADP:
-    1. Transport ADP via advection-diffusion
-    2. IF sigma_dt has elapsed (e.g. 0.25 s has passed)
-      1. Update the source term sigma_release   
-  8. Write Fields
+    * FOR (int m = 0; m < M_rxn; m++ )
+       * React biochemcials with RK4 solver  
+       * Update Species fluidPhase boundary conditions 
+  * Calculate ADP:
+    * Transport ADP via advection-diffusion
+    * IF sigma_dt has elapsed (e.g. 0.25 s has passed)
+      * Update the source term sigma_release   
+  * Write Fields
