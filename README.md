@@ -123,4 +123,7 @@ The solver begins by loading the mesh, reading in constants from constant/inputP
     * Transport ADP via advection-diffusion
     * IF sigma_dt has elapsed (e.g. 0.25 s has passed)
       * Update the source term sigma_release   
+  * Check if solution is diverging
+    * IF Theta_B or Theta_T exceed 1.01: STOP
+    * IF pressure p < 0: STOP  
   * Write Fields
