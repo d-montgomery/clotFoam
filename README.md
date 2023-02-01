@@ -132,7 +132,7 @@ The solver begins by loading the mesh, reading in constants from constant/inputP
 OpenFoam, and by extension the clotFoam application, is licensed free and open source under the [GNU General Public Licence version 3](https://www.gnu.org/licenses/gpl-3.0.en.html). 
 
 ## Acknowledgements
-The work was generously supported by grants from the National Science Foundation (NSF DMS-1848221) and the National Institute of Health (NIH R01HL120728 and RO1HL151984). Additional support from Federico Municchi (@fmuni). 
+The work was generously supported by grants from the National Science Foundation (NSF DMS-1848221) and the National Institute of Health (NIH R01HL120728 and RO1HL151984). 
 
 
 ## Citing This Work
