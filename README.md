@@ -127,3 +127,17 @@ The solver begins by loading the mesh, reading in constants from constant/inputP
     * IF Theta_B or Theta_T exceed 1.01: STOP
     * IF pressure p < 0: STOP  
   * Write Fields
+
+## License
+OpenFoam, and by extension the clotFoam application, is licensed free and open source under the [GNU General Public Licence version 3](https://www.gnu.org/licenses/gpl-3.0.en.html). 
+
+## Acknowledgements
+The work was generously supported by grants from the National Science Foundation (NSF DMS-1848221) and the National Institute of Health ()
+
+
+## Citing This Work
+If you use clotFoam in your work. Please use the following to cite our work:
+
+
+## References
+* K. Leiderman and A. L. Fogelson, “Grow with the flow: a spatial–temporal model of platelet deposition and blood coagulation under flow,” Mathematical Medicine and Biology: a journal of the IMA, vol. 28, no. 1, pp. 47–84, 2011.
