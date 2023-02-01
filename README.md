@@ -22,7 +22,7 @@ $ wmake
 ```
 
 ## Tutorial cases
-The clotFoam download comes with a 2D base case for simulating platelet mediated coagulation in a \[240,60] micron rectangle.  To run this simulation, navigate back to the main clotFoam directory, then to the baseCaseClotFoam_Rectangle directory:
+The clotFoam download comes with a 2D base case for simulating platelet mediated coagulation in a \[240,60] micron rectangle. The injury length is set to 90 microns, centered in the middle of the bottom wall of the vessel.  To run this simulation, navigate back to the main clotFoam directory, then to the baseCaseClotFoam_Rectangle directory:
 
 ```
 $ cd ../baseCaseClotFoam_Rectangle
@@ -31,4 +31,19 @@ $ rm -r [1-9]* 0.*
 $ blockMesh
 $ clotFoam
 ```
-The 
+
+The platelet-mediated coagulation modeled by clotFoam occurs on the real time scale of 10s of minutes.  Therefore, it may take upwards of one day of compute time to simulate clot growth.  
+
+## Parallelization
+To run clotFoam in parallel with P processors, first edit the decomposeParDict file located in the system directory so that the number of subdomains is P, and the decomposition method is scotch:
+```
+numberOfSubdomains P;
+
+method      scotch;
+```
+Then following the blockMesh command, decompose the domain and run with P processors:
+```
+$ decomposePar
+$ mpirun -np P clotFoam -parallel > log &
+```
+
