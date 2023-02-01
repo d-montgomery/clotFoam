@@ -10,13 +10,25 @@ The solver is built on the icoFoam code developed by [OpenCFD Ltd.](http://openf
 
 ## Installation
 
-clotFoam has been developed with the [OpenFoam v9 libraries](https://openfoam.org/version/9/). The code has been tested using the MacOS, Linux, and Ubuntu installations, but should work on any operating system capable of installing OpenFoam. To install the clotFoam solver, first follow the instructions on this page: [OpenFoam v9 Unbuntu Install](https://openfoam.org/download/9-ubuntu/) to install the OpenFoam 9 libraries.  Alternatively, you can find OpenFoam v9 for your desired operating system at the [OpenFoam Download Archive](https://openfoam.org/download/archive/).
+clotFoam has been developed with the [OpenFoam v9 libraries](https://openfoam.org/version/9/). The code has been tested using the MacOS, Linux, and Ubuntu installations, but should work on any operating system capable of installing OpenFoam. To install the clotFoam solver, first follow the instructions on this page: [OpenFoam v9 Unbuntu Install](https://openfoam.org/download/9-ubuntu/) to install the OpenFoam 9 libraries.  Alternatively, OpenFoam v9 can be downloaded for use with any operating system at the [OpenFoam Download Archive](https://openfoam.org/download/archive/).
 
 After installing OpenFoam v9, navigate to a working folder in a shell terminal, clone the git code repository, and build using OpenFoam v9. <em>Note: MacOS users will need to launch the OpenFoam v9 application using Docker prior to building.</em>
 
 ```
-$ git clone https://github.com/tomflint22/beamWeldFoam.git clotFoam
+$ git clone https://github.com/dmontgomery016/clotFoam.git clotFoam
 $ cd clotFoam/clotFoam
 $ wclean
 $ wmake
 ```
+
+## Tutorial cases
+The clotFoam download comes with a 2D base case for simulating platelet mediated coagulation in a \[240,60] micron rectangle.  To run this simulation, navigate back to the main clotFoam directory, then to the baseCaseClotFoam_Rectangle directory:
+
+```
+$ cd ../baseCaseClotFoam_Rectangle
+Delete any old simulation files (if present):
+$ rm -r [1-9]* 0.*
+$ blockMesh
+$ clotFoam
+```
+The 
