@@ -94,8 +94,8 @@ The solver begins by loading the mesh, reading in constants from constant/inputP
 * clotFoam Algorithm Summary:
    * Initialize mesh, constants, fields, and Species objects
    * WHILE t < endTime 
-   * 1. Update deltaT for based on CFL for stability
-   * 2. Fluids: calculate Darcy term
+      1. Update deltaT for based on CFL for stability
+      2. Fluids: calculate Darcy term
    * 3. Fluids: PISO Loop (p and U)
    * 3. Platelets Transport: transport via hindered advection-diffusion
    * 4. Biochemicals Transport: transport fluidPhase species via advection-diffusion
