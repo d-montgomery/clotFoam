@@ -47,14 +47,14 @@ $ decomposePar
 $ mpirun -np 6 clotFoam -parallel > log &
 ```
 
-When using an HPC system that utilizes a slurm filesystem, consider using the following outline for the .slurm file:
+When using an HPC system that utilizes a slurm filesystem, consider using the following outline for the .slurm file for running clotFoam on 2 nodes with a total of 48 cores:
 ```
 #! /bin/bash -x
-#SBATCH --job-name="OpenFOAM"
-#SBATCH --nodes=1
-#SBATCH --ntasks-per-node=12
+#SBATCH --job-name="clotFoam_simulation"
+#SBATCH --nodes=2
+#SBATCH --ntasks-per-node=24
 ###Multiply nodes and ntasks-per-node and use that for ntasks
-#SBATCH --ntasks=12
+#SBATCH --ntasks=48
 #SBATCH --time=143:59:00
 #SBATCH -o log.slurmFile
 #SBATCH -e err.run
