@@ -35,15 +35,56 @@ $ clotFoam
 The platelet-mediated coagulation modeled by clotFoam occurs on the real time scale of 10s of minutes.  Therefore, it may take upwards of one day of compute time to simulate clot growth.  
 
 ## Parallelization
-To run clotFoam in parallel with P processors, first edit the decomposeParDict file located in the system directory so that the number of subdomains is P, and the decomposition method is scotch:
+To run clotFoam in parallel with 6 processors, first edit the decomposeParDict file located in the system directory so that the number of subdomains is 6, and the decomposition method is scotch:
 ```
-numberOfSubdomains P;
+numberOfSubdomains 6;
 
 method      scotch;
 ```
-Then following the blockMesh command, decompose the domain and run with P processors:
+Then following the blockMesh command, decompose the domain and run with 6 processors:
 ```
 $ decomposePar
-$ mpirun -np P clotFoam -parallel > log &
+$ mpirun -np 6 clotFoam -parallel > log &
 ```
 
+When using an HPC system that utilizes a slurm filesystem, consider using the following outline for the .slurm file:
+```
+#! /bin/bash -x
+#SBATCH --job-name="OpenFOAM"
+#SBATCH --nodes=1
+#SBATCH --ntasks-per-node=12
+###Multiply nodes and ntasks-per-node and use that for ntasks
+#SBATCH --ntasks=12
+#SBATCH --time=143:59:00
+#SBATCH -o log.slurmFile
+#SBATCH -e err.run
+# Go to the directory from which our job was launched
+cd $SLURM_SUBMIT_DIR
+
+## Get the number of nodes, cores per node, and total number of cores
+echo "Number of Nodes = " $SLURM_JOB_NUM_NODES
+echo "Number of Cores Per Node = " $SLURM_NTASKS_PER_NODE
+echo "Number of Cores = " $SLURM_NTASKS
+nodes=$SLURM_JOB_NUM_NODES
+cores_per_node=$SLURM_NTASKS_PER_NODE
+total_cores=$SLURM_NTASKS
+
+# Create a short JOBID basd on the one provided by the scheduler 
+JOBID='echo $SLURM_JOBID'
+
+# Save a copy of our environment and script
+cat $0 > script.$JOBID
+printenv > env.$JOBID
+
+# Load the necessary modules (these are specific to the HPC system)
+module load compilers/gcc/9 
+module load mpi/openmpi/gcc/4.1.1
+module load apps/openfoam/gcc-openmpi/9
+source $OPENFOAM_DIR/etc/bashrc
+
+# Run the job
+echo "running job"
+srun -N $nodes --ntasks-per-node=$cores_per_node --pty bash
+time mpirun -np $total_cores clotFoam -parallel > log 2>&1 
+echo "job has finished"               
+```
