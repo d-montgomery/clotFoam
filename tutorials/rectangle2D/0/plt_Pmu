@@ -37,13 +37,14 @@ boundaryField
             //       1/C0 = 1 / d * integral(s(y) dy),
             //          d = diamter of vessel
             //          K : determines amplitude of shape
-            // Use with shear rates of 500, 1000, 1500 1/s
+            // Use with shear rates of 500, 1000, 1500 1/s.
+            // Note that K = 0 provides a uniform profile
 
             //using namespace std;
             const vectorField& Cf = patch().Cf();  // mesh values
-            scalarField& field = *this; // field at boundary
+            //scalarField& field = *this; // field at boundary
             int n =  patch().size(); // num elements on boundary
-            scalar s [n] = {};  // for storing the shape function 
+            scalarField s(patch().size(),0.0);  // for storing the shape function 
             scalar h [n] = {}; // for integration
 
             // Normal concentration of platelets at inlet  
@@ -76,33 +77,37 @@ boundaryField
                     );
 
             // Determine scale K for shape function (amplitude near wall)
-            scalar K = 330.0;
-            if (shr_rt == 500.0)
+            scalar K = 0.; // K = 0 provides uniform profile
+            if ( mag(shr_rt - 500.) < 1.e-10 ) // shr_rt = 500 1/s
             {
-                K = 202.0; // -> Peak-to-centre ratio ~5
+                K = 202.; // -> Peak-to-centre ratio ~5
             }
-            if (shr_rt == 1000.0)
+            else if ( mag(shr_rt - 1000.) < 1.e-10 ) // shr_rt = 1000 1/s
             {
-                K = 330.0; // -> Peak-to-centre ratio ~7.5
+                K = 330.; // -> Peak-to-centre ratio ~7.5
             }
-            if (shr_rt == 1500.0)
+            else if ( mag(shr_rt - 1500.) < 1.e-10) // shr_rt = 500 1/s
             {
-                K = 455.0; // -> Peak-to-centre ratio ~10
+                K = 455.; // -> Peak-to-centre ratio ~10
+            }
+            else
+            {
+                Info << "Shear Rate not defined for platelet margination function" << exit(FatalError);
             }
 
             // Get initial shape of profile
-            scalar r = y_max/2.0; // vessel radius (may need to change for other domains)
+            scalar r = y_max/2.; // vessel radius (may need to change for other domains)
             scalar y_prev = 0; // previous y-val for dy calcs
-            int i = 0;
+            // int i = 0;
             forAll(Cf,faceI)
             {
                 scalar y = Cf[faceI][1];
                 scalar R = std::abs(y - r) / r;
                 // Initial shape (not scaled correctly yet)
-                s[i] = 1. + K * pow( R, 18) * (1 - R);
-                h[i] = y - y_prev;
+                s[faceI] = 1. + K * pow( R, 18) * (1 - R);
+                h[faceI] = y - y_prev;
                 y_prev = y;
-                i = i+1; 
+                // i = i+1; 
             }
 
             // Integrate the profile with trapezoid rule
@@ -114,12 +119,7 @@ boundaryField
 
             // Set the field values at the inlet
             scalar C0 = y_max/intgrl_s;
-            i = 0;
-            forAll(Cf,faceI)
-            {
-                field[faceI] = Plt_0 * C0 * s[i]; 
-                i = i+1;
-            }
+            operator == (Plt_0 * C0 * s); 
 
             /*
             // check that the integral of the profile = integral Plt_0
