@@ -95,23 +95,23 @@ The solver begins by loading the mesh, reading in constants from constant/inputP
 ### clotFoam Algorithm Summary:
 * Initialize mesh, constants, fields, and Species objects
 * WHILE t < endTime 
-1. Update deltaT for based on CFL for stability
-2. Fluids: calculate Darcy term
-3. Fluids: PISO Loop (p and U)
-4. Platelets Transport: transport via hindered advection-diffusion
-5. Biochemicals Transport: transport fluidPhase species via advection-diffusion
-6. Platelet Reactions:
-  1. Update virtual substance eta
-  2. FOR (int m = 0; m < M_rxn; m++ )
-    1. React platelets with RK4 solver  
-    2. Update platelet boundary conditions 
-  3. Update volume fractions for platelets
-6. Biochemical Reactions:
-  1. FOR (int m = 0; m < M_rxn; m++ )
-    1. React biochemcials with RK4 solver  
-    2. Update Species fluidPhase boundary conditions 
-7. Calculate ADP:
-  1. Transport ADP via advection-diffusion
-  2. IF sigma_dt has elapsed (e.g. 0.25 s has passed)
-    1. Update the source term sigma_release   
-8. Write Fields
+  1. Update deltaT for based on CFL for stability
+  2. Fluids: calculate Darcy term
+  3. Fluids: PISO Loop (p and U)
+  4. Platelets Transport: transport via hindered advection-diffusion
+  5. Biochemicals Transport: transport fluidPhase species via advection-diffusion
+  6. Platelet Reactions:
+    1. Update virtual substance eta
+    2. FOR (int m = 0; m < M_rxn; m++ )
+      1. React platelets with RK4 solver  
+      2. Update platelet boundary conditions 
+    3. Update volume fractions for platelets
+  6. Biochemical Reactions:
+    1. FOR (int m = 0; m < M_rxn; m++ )
+      1. React biochemcials with RK4 solver  
+      2. Update Species fluidPhase boundary conditions 
+  7. Calculate ADP:
+    1. Transport ADP via advection-diffusion
+    2. IF sigma_dt has elapsed (e.g. 0.25 s has passed)
+      1. Update the source term sigma_release   
+  8. Write Fields
