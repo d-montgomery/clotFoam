@@ -296,6 +296,9 @@ seBound.field.set
 // Set all necessary fields for RK method = 0 with proper dimensions
 seBound.initializeRKFields();
 
+// Set the initial concentration for the seBound species
+seBound.setInitialConcentration();
+
 /**************************************************************************
     Fluid-Phase Fields
 ***************************************************************************/
@@ -306,19 +309,22 @@ Species_fluidPhase fluidPhase
 (
     num_fluidPhase,
     N_Avo,
-    Kc1_cat,
     Ke1_on, 
-    Ke1_off, 
+    Ke1_off,
+    Ke2_on, 
+    Ke2_off, 
+    Ks1_on, 
+    Ks1_off, 
     Ks2_on, 
     Ks2_off,
-    N_E1,
-    N_S2
+    N_1,
+    N_2
 );
 
 // Set ALL ptrList Sizes
 fluidPhase.setPtrListSize();
 
-// S1 (FX)
+// S1 (FV and FX)
 fluidPhase.field.set
 (
     0,
@@ -336,7 +342,7 @@ fluidPhase.field.set
     )   
 );
 
-// S2
+// S2 (Prothrombin)
 fluidPhase.field.set
 (
     1,
@@ -354,7 +360,7 @@ fluidPhase.field.set
     )   
 );
 
-// E1 (prothrombinase-like)
+// E1 (FXa)
 fluidPhase.field.set
 (    
     2,
@@ -404,18 +410,39 @@ Species_pltBound pltBound
     num_pltBound,
     N_Avo,
     Kc1_on, Kc1_off, Kc1_cat,
+    Kc2_on, Kc2_off, Kc2_cat,
     Ke1_on, Ke1_off,
+    Ke2_on, Ke2_off,
+    Ks1_on, Ks1_off,
     Ks2_on, Ks2_off,
-    N_E1, N_S2
+    N_1, N_2
 );
 
 // Set ALL ptrList Sizes
 pltBound.setPtrListSize();
 
-// S2b (Prothrombin?)
+// S1b (FV)
 pltBound.field.set
 (
     0,
+    new volScalarField
+    (   
+        IOobject
+        (   
+            "pltBound_S1b",
+            runTime.timeName(),
+            mesh,
+            IOobject::MUST_READ,                                      
+            IOobject::AUTO_WRITE
+        ),  
+        mesh
+    )   
+);
+
+// S2b (Prothrombin)
+pltBound.field.set
+(
+    1,
     new volScalarField
     (   
         IOobject
@@ -430,10 +457,10 @@ pltBound.field.set
     )   
 );
 
-// E1b (??)
+// E1b (Prothrombinase)
 pltBound.field.set
 (    
-    1,
+    2,
     new volScalarField
     (
         IOobject
@@ -448,15 +475,51 @@ pltBound.field.set
     )
 );
 
-// C1
+// E2b (Bound Thrombin)
 pltBound.field.set
 (    
-    2,
+    3,
+    new volScalarField
+    (
+        IOobject
+        (
+            "pltBound_E2b",
+            runTime.timeName(),
+            mesh,
+            IOobject::MUST_READ,
+            IOobject::AUTO_WRITE
+        ),
+        mesh
+    )
+);
+
+// C1 (S2b:E1b)
+pltBound.field.set
+(    
+    4,
     new volScalarField
     (
         IOobject
         (
             "pltBound_C1",
+            runTime.timeName(),
+            mesh,
+            IOobject::MUST_READ,
+            IOobject::AUTO_WRITE
+        ),
+        mesh
+    )
+);
+
+// C2 (S1b:E2b)
+pltBound.field.set
+(    
+    5,
+    new volScalarField
+    (
+        IOobject
+        (
+            "pltBound_C2",
             runTime.timeName(),
             mesh,
             IOobject::MUST_READ,

@@ -126,7 +126,7 @@ dimensionedScalar eta_ast
     inputParameters.lookup("eta_ast")
 );
 
-// Virtual substance diffusion length 
+// Virtual substance Eta Diffusion length
 dimensionedScalar l_D_eta
 (
     "l_D_eta",
@@ -233,8 +233,8 @@ dimensionedScalar Dc
 );
 
 // Number of binding sites on platelet surface for specific chems
-scalar N_E1 = readScalar(inputParameters.lookup("N_E1"));
-scalar N_S2 = readScalar(inputParameters.lookup("N_S2"));
+scalar N_1 = readScalar(inputParameters.lookup("N_1"));
+scalar N_2 = readScalar(inputParameters.lookup("N_2"));
 
 /**************************************************************************
     Kinetic Rates for Chemical Reactions 
@@ -281,6 +281,41 @@ dimensionedScalar Kc1_cat
     inputParameters.lookup("Kc1_cat")
 ); 
 
+// Kinetic Rates for C2
+dimensionedScalar Kc2_on
+(
+    "Kc2_on",
+    dimVolume/dimMoles/dimTime,
+    inputParameters.lookup("Kc2_on")
+); 
+dimensionedScalar Kc2_off
+(
+    "Kc2_off",
+    dimless/dimTime,
+    inputParameters.lookup("Kc2_off")
+); 
+
+dimensionedScalar Kc2_cat
+(
+    "Kc2_cat",
+    dimless/dimTime,
+    inputParameters.lookup("Kc2_cat")
+); 
+
+// Kinetic Rates for S1
+dimensionedScalar Ks1_on
+(
+    "Ks1_on",
+    dimVolume/dimMoles/dimTime,
+    inputParameters.lookup("Ks1_on")
+); 
+dimensionedScalar Ks1_off
+(
+    "Ks1_off",
+    dimless/dimTime,
+    inputParameters.lookup("Ks1_off")
+); 
+
 // Kinetic Rates for S2
 dimensionedScalar Ks2_on
 (
@@ -307,4 +342,18 @@ dimensionedScalar Ke1_off
     "Ke1_off",
     dimless/dimTime,
     inputParameters.lookup("Ke1_off")
+); 
+
+// Kinetic Rates for E2
+dimensionedScalar Ke2_on
+(
+    "Ke2_on",
+    dimVolume/dimMoles/dimTime,
+    inputParameters.lookup("Ke2_on")
+); 
+dimensionedScalar Ke2_off
+(
+    "Ke2_off",
+    dimless/dimTime,
+    inputParameters.lookup("Ke2_off")
 ); 

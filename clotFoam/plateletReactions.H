@@ -2,6 +2,9 @@
     React the Platelets M times
 ***************************************************************************/
 {    
+    //Info<< "Platelet Reaction Solver: M_react = " << M_rxn << 
+    //        ", dt_react = " << h_rxn.value() << endl;
+    
     // Solve for substance eta
     eta = max(0*Theta_B, min(1.+0*Theta_B,Theta_B));
     eta.correctBoundaryConditions(); 

@@ -28,6 +28,12 @@ class Species_seBound : public Species
             fluidPhase = &fluidPhase_;
         }
 
+        void setInitialConcentration()
+        {
+            // Set the initial concentration for E0 on injuryWalls
+            field[0].correctBoundaryConditions();
+        }
+
         // Function that edits the k's for RK4 method.  This assumes that 
         // all k's are defined as 
         //      k[i] = R_i(input) 

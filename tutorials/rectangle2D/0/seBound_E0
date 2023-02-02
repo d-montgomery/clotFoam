@@ -41,7 +41,70 @@ boundaryField
         type            calculated;
         value           uniform $E0_IC;
     }
+
+ /*
+    injuryWalls
+    {
+
+        type            codedFixedValue;
+        value           uniform 0.0;
+	    name  	        TFVIIa_BC;
     
+        // This code distributes the initial concentration nonuniformly
+        code
+        #{
+
+            const vectorField& Cf = patch().Cf();
+            scalarField& field = *this;
+
+            // Initial Concentration Value
+            const scalar E0_IC = readScalar
+            (
+                db().lookupObject<IOdictionary>
+                (
+                    "inputParameters"
+                ).lookup("E0_IC")
+            );
+
+            // Length of Domain x_max
+            const scalar x_max = readScalar
+            (
+                db().lookupObject<IOdictionary>
+                (
+                    "inputParameters"
+                ).lookup("x_max")
+            );
+
+            // Length of injury w_inj
+            const scalar w_inj = readScalar
+            (
+                db().lookupObject<IOdictionary>
+                (
+                    "inputParameters"
+                ).lookup("w_inj")
+            );
+
+            scalar inj_left = 0.5 * (x_max - w_inj);
+     
+            forAll(Cf, faceI) // Loop over all patch faces
+            {
+                const scalar x = Cf[faceI][0];
+
+                if( x >= inj_left && x <= inj_left + 0.33*w_inj)
+                {
+                    field[faceI] = E0_IC;
+                }
+
+                if( x >= inj_left + 0.66*w_inj && x <= inj_left + w_inj)
+                {
+                    field[faceI] = E0_IC;
+                }
+            }
+            
+        #};
+    }
+*/    
+
     frontAndBack
     {
         type            empty;

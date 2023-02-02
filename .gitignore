@@ -13,7 +13,11 @@ dynamicCode
 polyMesh*
 
 # Any processor directories
-processor*
+processor* 
+
+# Any data that isn't the 0 directory
+0.* 
+[1-9]*
 
 # bash history
 *.bash_history

@@ -42,12 +42,15 @@ Description
        dPbse/dt = Rbse(Pmu,Pma,Pba,Pbse),
        d[ADP]/dt = - div[u[ADP] - Dp grad([ADP])] + sigma_release(Pba,Pbse)
 
-    3) Coagulation: Thrombin (e2) generation via enzymatic reactions
+    3) Coagulation: Thrombin (E2) generation via enzymatic reactions
     
        S1 + E0 <=> C0 -> E0 + E1,
-       E1 + PE <=> E1^b,
-       S2 + PS <=> S2^b,
-       S2^b + E1^b <=> C1 -> E1^b + E2
+       S1 + P1 <=> S1b
+       E1 + P1 <=> E1b,
+       S2 + P2 <=> S2b,
+       E2 + P2 <=> E2b,
+       S2b + E1b <=> C1 -> E1b + E2b
+       S1b + E2b <=> C2 -> E1b + E2b
 
     Notes: 
         - The reaction zone must be defined as a patch called "injuryWalls".
@@ -63,6 +66,10 @@ Author: David Montgomery
 #include "fvCFD.H"
 #include "pisoControl.H"
 #include "mathematicalConstants.H"
+//#include "fvModels.H"  //openfoam-v10 only 
+
+// Set all kinetic rates and platelet props as global variables
+//#include "globalConstants.H"
 
 // Classes for RHS functions for each species
 #include "Species_baseClass.H"
@@ -104,7 +111,7 @@ int main(int argc, char *argv[])
     
     // Calculate initial Theta_T, Theta_B
     Plt.updateFractions();
-    
+
     //--- Start time loop
     Info<< "\nStarting time loop\n" << endl;
 
@@ -116,7 +123,7 @@ int main(int argc, char *argv[])
         }
         
         tcount = tcount + runTime.deltaTValue(); // for sigma release function
-        
+
         // Variable time step control variables and adjustments
         const bool adjustTimeStep =
             runTime.controlDict().lookupOrDefault("adjustTimeStep", false);

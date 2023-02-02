@@ -90,13 +90,12 @@ boundaryField
             }
             else
             {
-                Info << "Shear Rate not defined for platelet margination function" << exit(FatalError);
+                Info << "Shear rate not defined for platelet margination function" << exit(FatalError);
             }
 
             // Get initial shape of profile
             scalar r = y_max/2.; // vessel radius (may need to change for other domains)
-            scalar y_prev = 0; // previous y-val for dy calcs
-            // int i = 0;
+            scalar y_prev = 0; // previous y-val for dy calculations
             forAll(Cf,faceI)
             {
                 scalar y = Cf[faceI][1];
@@ -105,11 +104,10 @@ boundaryField
                 s[faceI] = 1. + K * pow( R, 18) * (1 - R);
                 h[faceI] = y - y_prev;
                 y_prev = y;
-                // i = i+1; 
             }
 
             // Integrate the profile with trapezoid rule
-            scalar intgrl_s = 0;
+            scalar intgrl_s = 0.;
             for(int k = 0; k < n-1; k++)
             {
                 intgrl_s = intgrl_s + 0.5 * h[k+1] * ( s[k] + s[k+1] );

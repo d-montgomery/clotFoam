@@ -25,7 +25,7 @@ This file contains all of the necessary input parameters used in the simulation
 /* ------------------------------------------------------------------------- *\
    Geometry and Mesh Parameters
 \*---------------------------------------------------------------------------*/
-// Lengths of the T Domain (all in mm, don't forget a decimal!)
+// Lengths of the rectangle (all in mm, don't forget a decimal!)
 x_max 240.0e-03; // width of left and right channel 
 y_max 60.0e-03; // total length of vessel 
 w_inj 90.0e-03; // length of injury from rectangle
@@ -56,7 +56,7 @@ Pv0 0.0; // outlet kinematic pressure [mm^2 / s^2]
 num_plts 4; // Total Number of platelet species (Integer)
 num_plts_mobile 2; // Number of mobile platelet species (for transport solve)
 M_rxn 2; // Number of time steps for reactions solve: h_react = dt / M_react
-Pdiam 3e-03; // Diameter of one platelet [mm]
+Pdiam 3.0e-03; // Diameter of one platelet [mm]
 Pmax 6.67e+07; // Maxiumum packing density [1 / mm^3]
 Dp 2.5e-05; // Diffusion rate for platelets [mm^2 / s]
 Plt_0 2.5e+05; // Mobile platelet inlet number density [1 / mm^3]
@@ -92,7 +92,7 @@ sigma_Tf 6; // How far back the integration goes for sigma_release [s]
 \*---------------------------------------------------------------------------*/
 num_seBound 2; // Number of SE-bound chem. species (integer)
 num_fluidPhase 4; // Number of fluid-phase chem. species (integer)
-num_pltBound 3; // Number of platelet-bound chem. species (integer)
+num_pltBound 6; // Number of platelet-bound chem. species (integer)
 
 t0_chem $t0_Plt; // When the chemicals start to enter the domain
 tf_chem $tf_Plt; // When the chemicals reach their full IC at inlet
@@ -104,28 +104,38 @@ N_Avo 6.02214076e+14; // [1 / nanomol]
 Dc 5.0e-05; // [mm^2/s]
 
 // Initial concentrations
-E0_IC 1.5e-07; // Concentration of E0 on SE Wall [nanomol / mm^2]
-S1_IC 1.7e-04; // Concentration of S1 at inlet [nanomol / mm^3]
-S2_IC 1.4e-03; // Concentration of S2 at inlet [nanomol / mm^3]
+E0_IC 1.5e-07; // Concentration of TF:VIIa on SE Wall [nanomol / mm^2]
+S1_IC 1.7e-04; // Concentration of X at inlet [nanomol / mm^3]
+S2_IC 1.4e-03; // Concentration of II at inlet [nanomol / mm^3]
 
 // Number of binding sites on platelet surface for specific chems
-N_E1 2700.0;
-N_S2 2000.0;
+N_1 2700.0;
+N_2 2000.0;
 
 // Kinetic Rates
 Kc0_on 8.95e+03; // On-rate for C0 [mm^3 / nanomol / s]
 Kc0_off 1.0; // Off-rate for C0 [1/s]
 Kc0_cat 1.15; // Cat-rate for C0 [1/s]
 
-Ke1_on 1.0e+04; // On-rate for E1 [mm^3 / nanomol / s]
-Ke1_off 2.5e-02; // Off-rate for E1 [1/s]
-
-Ks2_on 1.0e+04; // On-rate for S2 [mm^3 / nanomol / s]
-Ks2_off 5.9; // Off-rate for S2 [1/s]
-
 Kc1_on 1.03e+05; // On-rate for C1 [mm^3 / nanomol / s]
 Kc1_off 1.0; // Off-rate for C1 [1/s]
 Kc1_cat 30; // Cat-rate for C1 [1/s]
+
+Kc2_on 1.73e+04; //  On-rate for C2 [mm^3 / nanomol / s]
+Kc2_off 1.0;     // Off-rate for C2 [1/s]
+Kc2_cat 0.23;    // Cat-rate for C2 [1/s]
+
+Ke1_on 1.0e+04;  //  On-rate for Xa [mm^3 / nanomol / s]
+Ke1_off 2.5e-02; // Off-rate for Xa [1/s]
+
+Ke2_on 1.0e+04;  //  On-rate for IIa [mm^3 / nanomol / s]
+Ke2_off 5.9; // Off-rate for IIa [1/s]
+
+Ks1_on 5.7e+04; // On-rate for FV [mm^3 / nanomol / s]
+Ks1_off 0.17; // Off-rate for FV [1/s]
+
+Ks2_on 1.0e+04; // On-rate for II [mm^3 / nanomol / s]
+Ks2_off 5.9; // Off-rate for II [1/s]
 
 /* ------------------------------------------------------------------------- *\
    Other lengths used by multiple files (DON'T EDIT!!!!!)
