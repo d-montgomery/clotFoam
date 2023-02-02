@@ -22,10 +22,10 @@ $ wmake
 ```
 
 ## Tutorial cases
-The clotFoam download comes with a 2D base case for simulating platelet mediated coagulation in a \[240,60] micron rectangle. The injury length is set to 90 microns, centered in the middle of the bottom wall of the vessel.  To run this simulation, navigate back to the main clotFoam directory, then to the baseCaseClotFoam_Rectangle directory:
+The clotFoam download comes with a tutorial for simulating platelet mediated coagulation in a 2D \[240,60] micron rectangle. The injury length is set to 90 microns, centered in the middle of the bottom wall of the vessel.  To run this simulation, navigate back to the main clotFoam directory, then to the tutorials/rectangle2D directory:
 
 ```
-$ cd ../baseCaseClotFoam_Rectangle
+$ cd ../tutorials/rectangle2D
 Delete any old simulation files (if present):
 $ rm -r [1-9]* 0.*
 $ blockMesh
