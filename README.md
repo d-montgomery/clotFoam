@@ -1,6 +1,6 @@
 # clotFoam
 ## Overview
-clotFoam provides a general framework for simulating platelet-mediated coagulation in OpenFOAM.  The solver is based on the platelet aggregation model of Leiderman & Fogelson 2011, with an extremely reduced 9 species coagulation cascade that leads to thrombin generation.
+clotFoam provides a general framework for simulating platelet-mediated coagulation in OpenFOAM.  The solver is based on the platelet aggregation model of Leiderman & Fogelson 2011, with a 12 species coagulation cascade with positive feedback that leads to thrombin generation.  The coagulation model is inspired by Fogelson & Kuharsky 1998.
 The solver is built on the icoFoam code developed by [OpenCFD Ltd.](http://openfoam.com/) to solve the fluids/pressure equations. Target applications for clotFoam include:
 
 * platelet-mediated coagulation
@@ -141,3 +141,4 @@ If you use clotFoam in your work. Please use the following to cite our work:
 
 ## References
 * K. Leiderman and A. L. Fogelson, “Grow with the flow: a spatial–temporal model of platelet deposition and blood coagulation under flow,” Mathematical Medicine and Biology: a journal of the IMA, vol. 28, no. 1, pp. 47–84, 2011.
+* Aaron L. Fogelson and Andrew L. Kuharsky. Membrane binding-site density can modulate activation thresholds in enzyme systems. Journal of Theoretical Biology, 193(1):1–18, 1998.
