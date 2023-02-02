@@ -140,5 +140,5 @@ If you use clotFoam in your work. Please use the following to cite our work:
 
 
 ## References
-* K. Leiderman and A. L. Fogelson, “Grow with the flow: a spatial–temporal model of platelet deposition and blood coagulation under flow,” Mathematical Medicine and Biology: a journal of the IMA, vol. 28, no. 1, pp. 47–84, 2011.
-* Aaron L. Fogelson and Andrew L. Kuharsky. Membrane binding-site density can modulate activation thresholds in enzyme systems. Journal of Theoretical Biology, 193(1):1–18, 1998.
+* K. Leiderman and A. L. Fogelson, Grow with the flow: a spatial–temporal model of platelet deposition and blood coagulation under flow. Mathematical Medicine and Biology: a journal of the IMA, 28(1):47–84, 2011.
+* A. L. Fogelson and A. L. Kuharsky. Membrane binding-site density can modulate activation thresholds in enzyme systems. Journal of Theoretical Biology, 193(1):1–18, 1998.
