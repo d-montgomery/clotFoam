@@ -42,8 +42,7 @@ boundaryField
              ** Code has been written for serial and parallel runs **
         */
             
-            const vectorField& Cf = patch().Cf(); // value a face center
-            scalarField& field = *this; // field at boundary
+            const vectorField& Cf = patch().Cf(); // value at face center
             scalarField s (patch().size(), 0.); // field for storing shape s(y)
 
             //--- Read in necessary constants from inputParameters
@@ -122,22 +121,16 @@ boundaryField
                 intgrl_s = intgrl_s + dy[k] * s[k];
             }
 
-            // If parallel run, must sum all local intgl_s values
-            if (Pstream::nProcs() > 1) // sum all intgrl_s
+            // If parallel run, must sum all local intgrl_s values
+            if (Pstream::nProcs() > 1) 
             {
                 reduce(intgrl_s, sumOp<scalar>()); 
             }
-            
 
-            // Set the field values at the inlet
+            //--- Set the field values at the inlet
             scalar C0 = y_max/intgrl_s;
-            int i = 0;
-            forAll(Cf,faceI)
-            {
-                field[faceI] = Plt_0 * C0 * s[i]; 
-                i = i+1;
-            }
-
+            operator == (Plt_0 * C0 * s); 
+   
             /*
             // check that the integral of the profile = integral Plt_0
             scalar intconst = Plt_0 * y_max;
