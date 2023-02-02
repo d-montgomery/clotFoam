@@ -29,7 +29,7 @@ boundaryField
 
         code
         #{
-            // Near-wall excess platelet profile motivated by Eckstein '91
+            // Near-wall excess platelet profile motivated by Eckstein 1991
             // Pmu = Plt_0 * C0 * s(y), 
             // where s(y) = 1 + K*R(y)^18 * (1 - R), 
             //       R(y) = abs(y - r) / r, 
@@ -40,9 +40,7 @@ boundaryField
             // Use with shear rates of 500, 1000, 1500 1/s.
             // Note that K = 0 provides a uniform profile
 
-            //using namespace std;
             const vectorField& Cf = patch().Cf();  // mesh values
-            //scalarField& field = *this; // field at boundary
             int n =  patch().size(); // num elements on boundary
             scalarField s(patch().size(),0.0);  // for storing the shape function 
             scalar h [n] = {}; // for integration
