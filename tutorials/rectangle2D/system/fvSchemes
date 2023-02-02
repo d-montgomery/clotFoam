@@ -25,8 +25,8 @@ ddtSchemes
 
 gradSchemes
 {
-    default             cellMDLimited Gauss linear 0.0;
-    grad(p)             cellMDLimited Gauss linear 0.333;
+    default             Gauss linear;
+    grad(p)             Gauss linear;
 }
 
 divSchemes
@@ -39,7 +39,7 @@ divSchemes
 
 laplacianSchemes
 {
-    default             Gauss linear limited 1.0;
+    default             Gauss linear orthogonal;
 }
 
 interpolationSchemes
@@ -51,7 +51,7 @@ interpolationSchemes
 
 snGradSchemes
 {
-    default             limited 1.0;
+    default             orthogonal;
 }
 
 

@@ -67,9 +67,6 @@ boundaryField
             // Reference to this field on face (f) and center (c)
             scalarField& field_f = *this;
             const tmp<scalarField> field_c = patchInternalField();
-            
-            // face-normal vector on patch
-            //const vectorField& nf = patch().nf();
 
             // Lookup diffusion rate and kinetic rates 
             const scalar Dc = readScalar

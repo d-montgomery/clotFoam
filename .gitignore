@@ -19,5 +19,8 @@ processor*
 0.* 
 [1-9]*
 
+# log files
+log*
+
 # bash history
 *.bash_history

@@ -13,8 +13,6 @@ FoamFile
 }
 // * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * //
 
-#include "$FOAM_CASE/constant/inputParameters"
-
 dimensions      [0 -3 0 0 0 0 0];
 
 internalField   uniform 0;
@@ -29,31 +27,34 @@ boundaryField
 
         code
         #{
-            // Near-wall excess platelet profile motivated by Eckstein 1991
-            // Pmu = Plt_0 * C0 * s(y), 
-            // where s(y) = 1 + K*R(y)^18 * (1 - R), 
-            //       R(y) = abs(y - r) / r, 
-            //          r = radius of vessel,
-            //       1/C0 = 1 / d * integral(s(y) dy),
-            //          d = diamter of vessel
-            //          K : determines amplitude of shape
-            // Use with shear rates of 500, 1000, 1500 1/s.
-            // Note that K = 0 provides a uniform profile
+        /*
+             Near-wall excess platelet profile motivated by Eckstein 1991
+             Pmu = Plt_0 * C0 * s(y), 
+             where s(y) = 1 + K*R(y)^18 * (1 - R), 
+                   R(y) = abs(y - r) / r, 
+                      r = radius of vessel,
+                   1/C0 = 1 / d * integral( s(y)*dy ),
+                      d = diamter of vessel
+                      K : determines amplitude of shape
+             Use with shear rates of 500, 1000, 1500 1/s.
+             Note that K = 0 provides a uniform profile
 
-            const vectorField& Cf = patch().Cf();  // mesh values
-            int n =  patch().size(); // num elements on boundary
-            scalarField s(patch().size(),0.0);  // for storing the shape function 
-            scalar h [n] = {}; // for integration
+             ** Code has been written for serial and parallel runs **
+        */
+            
+            const vectorField& Cf = patch().Cf(); // value a face center
+            scalarField& field = *this; // field at boundary
+            scalarField s (patch().size(), 0.); // field for storing shape s(y)
 
+            //--- Read in necessary constants from inputParameters
             // Normal concentration of platelets at inlet  
-            const scalar Plt_0
-                = readScalar
-                    (
-                        db().lookupObject<IOdictionary>
-                        (
-                            "inputParameters"
-                        ).lookup("Plt_0")
-                    );
+            const scalar Plt_0 = readScalar
+            (
+                db().lookupObject<IOdictionary>
+                (
+                    "inputParameters"
+                ).lookup("Plt_0")
+            );
             
             // wall shear rate inverse seconds
             const scalar shr_rt = readScalar
@@ -65,16 +66,24 @@ boundaryField
             );
 
             // Height of the vessel (may need to change for other domains)
-            const scalar y_max
-                = readScalar
-                    (
-                        db().lookupObject<IOdictionary>
-                        (
-                            "inputParameters"
-                        ).lookup("y_max")
-                    );
+            const scalar y_max = readScalar
+            (
+                db().lookupObject<IOdictionary>
+                (
+                    "inputParameters"
+                ).lookup("y_max")
+            );
 
-            // Determine scale K for shape function (amplitude near wall)
+            // Depth of the vessel in z-dir (may need to change for other domains)
+            const scalar dz = readScalar
+            (
+                db().lookupObject<IOdictionary>
+                (
+                    "inputParameters"
+                ).lookup("Zdir")
+            );
+
+            //--- Determine scale K for shape function (amplitude near wall)
             scalar K = 0.; // K = 0 provides uniform profile
             if ( mag(shr_rt - 500.) < 1.e-10 ) // shr_rt = 500 1/s
             {
@@ -90,43 +99,60 @@ boundaryField
             }
             else
             {
-                Info << "Shear rate not defined for platelet margination function" << exit(FatalError);
+                Info << "Shear rate not defined for platelet margination function" 
+                << exit(FatalError);
             }
 
-            // Get initial shape of profile
+            //--- Calculate initial shape profile s(y) = 1 + K*R(y)^18 * (1 - R)
             scalar r = y_max/2.; // vessel radius (may need to change for other domains)
-            scalar y_prev = 0; // previous y-val for dy calculations
-            forAll(Cf,faceI)
+            forAll(Cf,k)
             {
-                scalar y = Cf[faceI][1];
+                scalar y = Cf[k][1];
                 scalar R = std::abs(y - r) / r;
-                // Initial shape (not scaled correctly yet)
-                s[faceI] = 1. + K * pow( R, 18) * (1 - R);
-                h[faceI] = y - y_prev;
-                y_prev = y;
+                s[k] = 1. + K * pow( R, 18) * (1 - R);
             }
 
-            // Integrate the profile with trapezoid rule
+            //--- Integrate the profile with midpoint rule
+            // Face area magnitude magSf = dy*dz 
+            // (in 2D only want dy, so divide by dz)
+            const scalarField dy = patch().magSf() / dz; 
             scalar intgrl_s = 0.;
-            for(int k = 0; k < n-1; k++)
+            forAll(s,k)
             {
-                intgrl_s = intgrl_s + 0.5 * h[k+1] * ( s[k] + s[k+1] );
+                intgrl_s = intgrl_s + dy[k] * s[k];
             }
+
+            // If parallel run, must sum all local intgl_s values
+            if (Pstream::nProcs() > 1) // sum all intgrl_s
+            {
+                reduce(intgrl_s, sumOp<scalar>()); 
+            }
+            
 
             // Set the field values at the inlet
             scalar C0 = y_max/intgrl_s;
-            operator == (Plt_0 * C0 * s); 
+            int i = 0;
+            forAll(Cf,faceI)
+            {
+                field[faceI] = Plt_0 * C0 * s[i]; 
+                i = i+1;
+            }
 
             /*
             // check that the integral of the profile = integral Plt_0
             scalar intconst = Plt_0 * y_max;
-            scalar intgrl_srofile = 0;
-            for(int k = 0; k < n-1; k++)
+            scalar intgrl_profile = 0;
+            forAll(s,k)
             {
-                intgrl_profile = intgrl_profile + 0.5 * h[k+1] * Plt_0 * C0(s[k]+s[k+1]);
+                intgrl_profile = intgrl_profile + dy[k] * Plt_0 * C0 * s[k];
+            }
+            // If parallel run, must sum all local intgl_s values
+            if (Pstream::nProcs() > 1) // sum all intgrl_profile
+            {
+                reduce(intgrl_profile, sumOp<scalar>()); 
             }
             Info << "intconst = " << intconst << endl;
-            Info << "intgrl_profile = " << intgrl_srofile << endl;
+            Info << "intgrl_profile = " << intgrl_profile << endl;
             */
 
         #};
