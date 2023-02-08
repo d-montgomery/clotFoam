@@ -6,7 +6,7 @@
      \\/     M anipulation  |
 -------------------------------------------------------------------------------
 Description
-   This file contains all of the necessary input parameters used in coagFoam.
+   This file contains all of the necessary input parameters used in clotFoam.
    All of the
 \*---------------------------------------------------------------------------*/
 FoamFile
@@ -16,11 +16,6 @@ FoamFile
     location    "constant";
     object      inputParameters;
 }
-// * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * //
-/*-------------------------*- Input Parameters -*----------------------------*\
-This file contains all of the necessary input parameters used in the simulation
-\*---------------------------------------------------------------------------*/
-// * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * //
 
 /* ------------------------------------------------------------------------- *\
    Geometry and Mesh Parameters

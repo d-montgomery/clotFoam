@@ -23,49 +23,15 @@ boundaryField
 {
     inletVessel
     {
-        type            codedFixedValue;
-        value           uniform $S2_IC;
-        name            rampS2_Inlet;
-
-        code
-        #{
-            // wall shear rate inverse seconds
-            const scalar S2_IC
-                = readScalar
-                    (
-                        db().lookupObject<IOdictionary>
-                        (
-                            "inputParameters"
-                        ).lookup("S2_IC")
-                    );
-
-                    const scalar t_start
-                    = readScalar
-                        (
-                            db().lookupObject<IOdictionary>
-                            (
-                                "inputParameters"
-                            ).lookup("t0_chem")
-                        );
-                const scalar t_stop
-                    = readScalar
-                        (
-                            db().lookupObject<IOdictionary>
-                            (
-                                "inputParameters"
-                            ).lookup("tf_chem")
-                        );
-                scalar m = S2_IC / (t_stop - t_start);
-    
-                operator==
-                (
-                    max(
-                            0.0, 
-                            min(S2_IC, m*this->db().time().value() - m*t_start)
-                        )
-                );
-        #};
-
+        type         uniformFixedValue;
+        uniformValue
+        {
+            type             scale;
+            scale            linearRamp;
+            start            $t0_chem;
+            duration         $tf_chem;
+            value            $S2_IC;
+        }
     }
     
     outletVessel
