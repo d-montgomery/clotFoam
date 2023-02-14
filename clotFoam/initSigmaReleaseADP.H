@@ -24,17 +24,6 @@ else
               << exit(FatalError);
 }
 
-// Make sure that startTime is divsible by sigma_dt
-if (fmod(runTime.controlDict().lookup<double>("startTime"),sigma_dt) > 1e-12)
-{
-    Info<< "\n!!! Invalid startTime !!!" 
-        << "\nfmod(startTime, sigma_dt) must be 0" 
-        << "\nRestart with an appropriate startTime" << endl;
-    FatalError<< "\n!!! Invalid startTime !!!" 
-    << "\nfmod(startTime, sigma_dt) must be 0" 
-    << "\nRestart with an appropriate startTime" << exit(FatalError);
-}
-
 // Initialize pointer list for ddt_Pbnew and IOList for tau.
 PtrList<volScalarField> ddt_Pbnew(sigma_N+1);
 IOList<scalar> tau
@@ -45,16 +34,14 @@ IOList<scalar> tau
                     runTime.timeName(),
                     mesh,
                     IOobject::READ_IF_PRESENT,                                      
-                    IOobject::AUTO_WRITE
+                    IOobject::NO_WRITE
                 ),  
     sigma_N+1 //num elements in List
 );
 
+// Initialize ddt_Pbnew_i as zeros, or read if present 
 forAll(ddt_Pbnew,i)
 {
-    // Initialize ddt_Pbnew as zeros, or read if present 
-    if (save_ddt_Pbnew)
-    {
         ddt_Pbnew.set
         (   
             i,  
@@ -66,29 +53,9 @@ forAll(ddt_Pbnew,i)
                     runTime.timeName(),
                     mesh,
                     IOobject::READ_IF_PRESENT,                                      
-                    IOobject::AUTO_WRITE
-                ),  
-                0*Pmax*Theta_B / runTime.deltaT()
-            )   
-        );  
-    }
-    else 
-    {
-        ddt_Pbnew.set
-        (   
-            i,  
-            new volScalarField
-            (   
-                IOobject
-                (   
-                    "ddt_Pbnew",
-                    runTime.timeName(),
-                    mesh,
-                    IOobject::READ_IF_PRESENT,                                      
                     IOobject::NO_WRITE
                 ),  
                 0*Pmax*Theta_B / runTime.deltaT()
             )   
         );  
-    }
 }

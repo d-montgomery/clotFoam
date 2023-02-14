@@ -26,8 +26,8 @@ y_max 60.0e-03; // total length of vessel
 w_inj 90.0e-03; // length of injury from rectangle
 
 // Mesh parameters integers: these should match the rectangular domain
-Nx 128; // x cells in upper part of vessel 
-Ny 32; // x cells in upper part of vessel 
+Nx 80; // x cells in upper part of vessel 
+Ny 20; // x cells in upper part of vessel 
 
 // Mesh parameters in z-direction
 Zdir 10e-03; // depth in z-direction
@@ -76,15 +76,7 @@ e2_ast 1.0e-06; // Critical concentration of thrombin [nanomol / mm^3]
 
 /* ------------------------------------------------------------------------- *\
    ADP Parameters
-\* ------------------------------------------------------------------------- *\ 
-   Note: if the parameter save_ddt_Pbnew = true, the number of newly 
-   activated platelets will be saved every tau = sigma_dt seconds.  Depending 
-   on sigma_dt and sigma_Tf, this may save upwards of 25 extra fields at each 
-   writeTime. ddt_Pbnew is used in calculating the source term in ADP.  If 
-   save_ddt_Pbnew = false, you must restart the code from startTime = 0 in the
-   event of code termination. Always restart code from a multiple of sigma_dt.
-\*---------------------------------------------------------------------------*/
-save_ddt_Pbnew true; // Save ddt_Pbnew used in sigma_release calculation?
+\* ------------------------------------------------------------------------- */
 D_ADP 5.0e-04; // Diffusion rate for ADP [mm^2 / s]
 ADP_rel 2.0e-08; // Total ADP released [nanomol/platlet]
 sigma_dt 0.25; // How often the sigma_release function is calculated [s]

@@ -63,13 +63,10 @@ Author: David Montgomery
         with help from Federico Municchi and Karin Leiderman
 \*---------------------------------------------------------------------------*/
 
+// Classes from OpenFOAM
 #include "fvCFD.H"
 #include "pisoControl.H"
 #include "mathematicalConstants.H"
-//#include "fvModels.H"  //openfoam-v10 only 
-
-// Set all kinetic rates and platelet props as global variables
-//#include "globalConstants.H"
 
 // Classes for RHS functions for each species
 #include "Species_baseClass.H"
