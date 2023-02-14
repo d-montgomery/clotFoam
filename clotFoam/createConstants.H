@@ -146,6 +146,11 @@ g0 = ( pow(eta_ast,3.0) + pow(1.0 - eta_t,3.0) ) / pow(1.0-eta_t, 3.0);
 /**************************************************************************
     Constants for ADP
 ***************************************************************************/
+// Determine if each ddt_Pbnew[i] should be saved.  Helpful if code is 
+// terminated for any reason.
+bool save_ddt_Pbnew = 
+    inputParameters.lookupOrDefault<bool>("save_ddt_Pbnew",false);
+    
 // ADP Diffusion Constant
 dimensionedScalar D_ADP
 (

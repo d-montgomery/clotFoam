@@ -1,6 +1,8 @@
 /**************************************************************************
     Initialize components necessary for sigma_release in ADP source
 ***************************************************************************/
+Info << "\nInitializing the ADP source term sigma_release" << endl;
+
 // Setup for sigma release field
 scalar tcount = 0.0; // used to determine when sigma_release updates
 label sigma_N = 24; // Default number of ddt_Pbnew stored 
@@ -15,48 +17,78 @@ if (fmod(sigma_Tf, sigma_dt) == 0.0 && sigma_dt > 0.0)
 }
 else
 {
-    Info<< "\n!!! Invalid sigma_dt  !!!" <<endl;
-    Info<< "fmod(sigma_Tf,sigma_dt) must be 0" << endl;
-    FatalError<< nl << exit(FatalError);
+    Info<< "\n!!! Invalid sigma_dt  !!!" 
+        << "\nfmod(sigma_Tf,sigma_dt) must be 0" << endl;
+    FatalError<< "\n!!! Invalid sigma_dt  !!!" 
+              << "\nfmod(sigma_Tf,sigma_dt) must be 0" 
+              << exit(FatalError);
 }
 
-// Initialize pointer list for ddt_Pbnew and list for tau.
+// Make sure that startTime is divsible by sigma_dt
+if (fmod(runTime.controlDict().lookup<double>("startTime"),sigma_dt) > 1e-12)
+{
+    Info<< "\n!!! Invalid startTime !!!" 
+        << "\nfmod(startTime, sigma_dt) must be 0" 
+        << "\nRestart with an appropriate startTime" << endl;
+    FatalError<< "\n!!! Invalid startTime !!!" 
+    << "\nfmod(startTime, sigma_dt) must be 0" 
+    << "\nRestart with an appropriate startTime" << exit(FatalError);
+}
+
+// Initialize pointer list for ddt_Pbnew and IOList for tau.
 PtrList<volScalarField> ddt_Pbnew(sigma_N+1);
-double tau [sigma_N+1] = {};
+IOList<scalar> tau
+(
+    IOobject
+                (   
+                    "tau",
+                    runTime.timeName(),
+                    mesh,
+                    IOobject::READ_IF_PRESENT,                                      
+                    IOobject::AUTO_WRITE
+                ),  
+    sigma_N+1 //num elements in List
+);
 
 forAll(ddt_Pbnew,i)
 {
     // Initialize ddt_Pbnew as zeros, or read if present 
-    // (Only reads last field!  
-    //  Needs to be updated to read in all fields)
-    ddt_Pbnew.set
-    (   
-        i,  
-        new volScalarField
+    if (save_ddt_Pbnew)
+    {
+        ddt_Pbnew.set
         (   
-            IOobject
+            i,  
+            new volScalarField
             (   
-                "ddt_Pbnew",
-                runTime.timeName(),
-                mesh,
-                IOobject::READ_IF_PRESENT,                                      
-                IOobject::AUTO_WRITE
-            ),  
-            0*Pmax*Theta_B / runTime.deltaT()
-        )   
-    );  
-
-    // Iinitialize tau with all zeros if startTime = 0.
-    // else: tau = [ startTime - sigma_Tf, startTime - sigma_Tf+sigma_dt ,
-    //               ..., startTime - sigma_dt, startTime]
-    // !! This assumes startTime is an integer !!
-
-    tau[i] = runTime.controlDict().lookupOrDefault<double>("startTime",0.0);
-    /*std::max
-        (
-            0.0,
-            runTime.controlDict().lookupOrDefault<double>("startTime",0.0)
-            - sigma_Tf + sigma_dt*i
-        );
-        */
+                IOobject
+                (   
+                    "ddt_Pbnew_" + std::to_string(i),
+                    runTime.timeName(),
+                    mesh,
+                    IOobject::READ_IF_PRESENT,                                      
+                    IOobject::AUTO_WRITE
+                ),  
+                0*Pmax*Theta_B / runTime.deltaT()
+            )   
+        );  
+    }
+    else 
+    {
+        ddt_Pbnew.set
+        (   
+            i,  
+            new volScalarField
+            (   
+                IOobject
+                (   
+                    "ddt_Pbnew",
+                    runTime.timeName(),
+                    mesh,
+                    IOobject::READ_IF_PRESENT,                                      
+                    IOobject::NO_WRITE
+                ),  
+                0*Pmax*Theta_B / runTime.deltaT()
+            )   
+        );  
+    }
 }

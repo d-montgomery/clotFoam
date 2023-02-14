@@ -121,8 +121,6 @@ int main(int argc, char *argv[])
         {
             Info<< "Time = " << runTime.timeName() << nl << endl;
         }
-        
-        tcount = tcount + runTime.deltaTValue(); // for sigma release function
 
         // Variable time step control variables and adjustments
         const bool adjustTimeStep =
