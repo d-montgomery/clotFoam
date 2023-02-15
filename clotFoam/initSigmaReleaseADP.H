@@ -58,4 +58,10 @@ forAll(ddt_Pbnew,i)
                 0*Pmax*Theta_B / runTime.deltaT()
             )   
         );  
+
+        // Initialize 
+        if (runTime.controlDict().lookup<double>("startTime") < 1e-12)
+        {
+            tau[i] = 0.;
+        }
 }
