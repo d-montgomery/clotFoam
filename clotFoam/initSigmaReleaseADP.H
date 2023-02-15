@@ -59,9 +59,11 @@ forAll(ddt_Pbnew,i)
             )   
         );  
 
-        // Initialize 
+        
+        // Initialize tau to zero if startTime = 0
         if (runTime.controlDict().lookup<double>("startTime") < 1e-12)
         {
             tau[i] = 0.;
         }
+        
 }
