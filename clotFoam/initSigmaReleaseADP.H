@@ -8,7 +8,7 @@ scalar tcount = 0.0; // used to determine when sigma_release updates
 label sigma_N = 24; // Default number of ddt_Pbnew stored 
 
 // Make sure sigma_Tf is divisible by provided sigma_dt
-if (fmod(sigma_Tf, sigma_dt) == 0.0 && sigma_dt > 0.0)  
+if (remainder(sigma_Tf, sigma_dt) < 1e-12 && sigma_dt > 0.0)  
 {
     sigma_N = round(sigma_Tf / sigma_dt);
     Info<< "\nSigma_release info: sigma_Tf = "<< sigma_Tf
@@ -18,9 +18,9 @@ if (fmod(sigma_Tf, sigma_dt) == 0.0 && sigma_dt > 0.0)
 else
 {
     Info<< "\n!!! Invalid sigma_dt  !!!" 
-        << "\nfmod(sigma_Tf,sigma_dt) must be 0" << endl;
+        << "\nremainder(sigma_Tf,sigma_dt) must be ~= 0" << endl;
     FatalError<< "\n!!! Invalid sigma_dt  !!!" 
-              << "\nfmod(sigma_Tf,sigma_dt) must be 0" 
+              << "\nremainder(sigma_Tf,sigma_dt) must be ~= 0" 
               << exit(FatalError);
 }
 
