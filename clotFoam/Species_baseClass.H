@@ -39,7 +39,7 @@ class Species
 
             forAll(field,j)
             {
-                fieldOldTime.set(j, new volScalarField(field[j]) );
+                fieldOldTime.set(j, new volScalarField(0*field[j]) );
                 k.set(j, new volScalarField(0*field[j]/h));
                 input.set(j, new volScalarField(0*field[j]));
             }
