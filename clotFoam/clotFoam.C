@@ -30,17 +30,19 @@ Description
     1) Fluid:  Transient solver for incompressible, laminar flow of Newtonian 
        fluid with an additional Darcy term
 
-        du/dt = - grad(p) - div[u grad(u) - nu grad(u)] - nu alpha(theta_B) u,
+        du/dt = - grad(p') - div[u*grad(u) - nu*grad(u)] - nu*alpha(theta_B)*u,
         div(u) = 0,
 
     2) Platelet Aggregation: hindered transport of 4 platelet species with 
        activation by ADP and thrombin (e2)
        
-       dPmu/dt = - div[ W(theta_T) (uPmu - Dp grad(Pmu)) ] + Rmu(Pmu,Pma,Pba,Pbse),
-       dPma/dt = - div[ W(theta_T) (uPma - Dp grad(Pma)) ] + Rma(Pmu,Pma,Pba,Pbse),
-       dPba/dt  = Rba(Pmu,Pma,Pba,Pbse),
-       dPbse/dt = Rbse(Pmu,Pma,Pba,Pbse),
-       d[ADP]/dt = - div[u[ADP] - Dp grad([ADP])] + sigma_release(Pba,Pbse)
+         dPmu/dt = - div[W(theta_T)*(u*Pmu - Dp*grad(Pmu))] 
+                   + Rmu(Pmu,Pma,Pba,Pbse),
+         dPma/dt = - div[W(theta_T)*(u*Pma - Dp*grad(Pma))] 
+                   + Rma(Pmu,Pma,Pba,Pbse),
+        dPba/dt  = Rba(Pmu,Pma,Pba,Pbse),
+        dPbse/dt = Rbse(Pmu,Pma,Pba,Pbse),
+       d[ADP]/dt = - div[u*[ADP] - Dp*grad([ADP])] + sigma_release(Pba,Pbse)
 
     3) Coagulation: Thrombin (E2) generation via enzymatic reactions
     
@@ -60,7 +62,7 @@ Description
 
 Author: David Montgomery 
         PhD Candidate at Colorado School of Mines 2022
-        with help from Federico Municchi and Karin Leiderman
+        with help from Federico Municchi PhD and Karin Leiderman PhD
 \*---------------------------------------------------------------------------*/
 
 // Classes from OpenFOAM
