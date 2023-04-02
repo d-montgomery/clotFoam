@@ -1,0 +1,116 @@
+/*--------------------------------*- C++ -*----------------------------------*\
+  =========                 |
+  \\      /  F ield         | OpenFOAM: The Open Source CFD Toolbox
+   \\    /   O peration     | Website:  https://openfoam.org
+    \\  /    A nd           | Version:  9
+     \\/     M anipulation  |
+\*---------------------------------------------------------------------------*/
+FoamFile
+{
+    format      ascii;
+    class       dictionary;
+    location    "system";
+    object      controlDict;
+}
+// * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * //
+
+application     clotFoam;
+
+startFrom       startTime;
+
+startTime       0;
+
+stopAt          endTime;
+
+endTime         1;
+
+deltaT          1e-5;
+
+writeControl    adjustableRunTime;
+
+writeInterval   0.1;
+
+purgeWrite      0;
+
+writeFormat     ascii;
+
+writePrecision  6;
+
+writeCompression on;
+
+timeFormat      general;
+
+timePrecision   6;
+
+runTimeModifiable true;
+
+adjustTimeStep yes;
+
+maxCo 0.75;
+
+maxDeltaT 1e-2;
+
+DebugSwitches
+{
+    SolverPerformance   0;                                   
+}
+
+functions
+{
+    writeTimes_ADPSourceTerm
+    {
+    /* ----------------------------------------------------------------------*\
+        This function determines how often tau and ddt_Pbnew_i are written.  
+        These fields are used in calculating the source term sigma_release for
+        ADP.  Writing the fields every writeTime is not advised, however, not
+        writing them would disable users from restarting code at times > 0. 
+        For long simulations (e.g. endTime = 900s), consider writing these 
+        fields every 100s.
+
+        There should be N = (sigma_Tf/sigma_dt + 1) fields for ddt_Pbnew.
+        The defaults are sigma_dt = 0.25 with sigma_Tf = 6, so that N+1 = 25.  
+        Add or subtract ddt_Pbnew_# as necessary.  Lastly, the writeTime 
+        should be in multiples of sigma_dt. 
+        
+        If you don't want to write these fields at anytime, simply delete
+        this function.  If you know how to automate this please let me know!
+    \* ----------------------------------------------------------------------*/
+        
+        type        writeObjects;
+        libs        ("libutilityFunctionObjects.so");
+
+        objects     
+        (
+            tau
+            ddt_Pbnew_0
+            ddt_Pbnew_1
+            ddt_Pbnew_2
+            ddt_Pbnew_3
+            ddt_Pbnew_4
+            ddt_Pbnew_5
+            ddt_Pbnew_6
+            ddt_Pbnew_7
+            ddt_Pbnew_8
+            ddt_Pbnew_9
+            ddt_Pbnew_10
+            ddt_Pbnew_11
+            ddt_Pbnew_12
+            ddt_Pbnew_13
+            ddt_Pbnew_14
+            ddt_Pbnew_15
+            ddt_Pbnew_16
+            ddt_Pbnew_17
+            ddt_Pbnew_18
+            ddt_Pbnew_19
+            ddt_Pbnew_20
+            ddt_Pbnew_21
+            ddt_Pbnew_22
+            ddt_Pbnew_23
+            ddt_Pbnew_24
+        );
+        writeOption     anyWrite;
+        writeControl    writeTime;
+        writeInterval   5;
+    }
+}
+// ************************************************************************* //

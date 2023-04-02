@@ -1,0 +1,117 @@
+/*--------------------------------*- C++ -*----------------------------------*\
+  =========                 |
+  \\      /  F ield         | OpenFOAM: The Open Source CFD Toolbox
+   \\    /   O peration     | Website:  https://openfoam.org
+    \\  /    A nd           | Version:  9
+     \\/     M anipulation  |
+\*---------------------------------------------------------------------------*/
+FoamFile
+{
+    format      ascii;
+    class       volScalarField;
+    object      fluidPhase_E1;
+}
+// * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * //
+
+dimensions      [0 -3 0 0 1 0 0];
+
+internalField   uniform 0;
+
+boundaryField
+{
+    inletLeft
+    {
+        type            zeroGradient;
+    }
+
+    inletRight
+    {
+        type            zeroGradient;
+    }
+    
+    outletLeft
+    {
+        type            zeroGradient;
+    }
+
+    outletRight
+    {
+        type            zeroGradient;
+    }
+    
+    injuryWalls
+    {
+        type            codedMixed;
+        refValue        uniform 0.0;
+        refGradient     uniform 0.0;
+        valueFraction   uniform 0.0;
+
+        name            robinBC_E1;
+        code
+        #{
+            /* * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *\
+            Coag model requires Robin BC of form:
+                 D d/dn(field) = K * field + F
+            which can be written as: 
+                 d/dn(field) = 1/D * (K * field + F)
+
+            For use with codedMixed set: 
+                this->refValue() = 0;
+                this->refGrad() = 1/D * (K * field + F)
+                this->valueFraction() = 0;
+
+            For this field E1, set K = 0 and F = Kc0_cat * C0 so that: 
+                this->refValue() = 0, this->refGrad() =  F / D;
+            \* * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * */ 
+
+            // Lookup diffusion rate and kinetic rates 
+            const scalar D = readScalar
+            (
+                db().lookupObject<IOdictionary>
+                (
+                    "inputParameters"
+                ).lookup("Dc")
+            );
+            
+            const scalar Kc0_cat = readScalar
+            (
+                db().lookupObject<IOdictionary>
+                (
+                    "inputParameters"
+                ).lookup("Kc0_cat")
+            );
+
+            // Lookup necessary fields for reaction at boundary
+            const scalarField& C0
+            (
+                patch().lookupPatchField<volScalarField, scalar>("seBound_C0")
+            );
+
+            // Get the direction of the deltaCoeffs
+            const vectorField deltaVec = patch().delta();
+
+            scalarField F = Kc0_cat * C0;
+
+            this->refGrad() = F / D;
+            
+        #};
+    }
+    
+    fixedWalls
+    {
+        type            zeroGradient;
+    }
+
+    leftChannelInnerWall
+    {
+        type            zeroGradient;
+    }
+
+    rightChannelInnerWall
+    {
+        type            zeroGradient;
+    }
+        
+}
+
+// ************************************************************************* //

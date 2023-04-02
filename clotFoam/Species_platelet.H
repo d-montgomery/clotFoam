@@ -92,7 +92,7 @@ class Species_platelet : public Species
         void updateKs()
         {
             /* * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *\
-            Key for variable references
+            Key for variable references (note mobile platetlets come first)
             Plt[0] -> Pmu,   fluidPhase[0] -> S1,   
             Plt[1] -> Pma,   fluidPhase[1] -> S2,   
             Plt[2] -> Pba,   fluidPhase[2] -> E1,   

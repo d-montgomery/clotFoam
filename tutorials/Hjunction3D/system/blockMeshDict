@@ -1,0 +1,227 @@
+/*--------------------------------*- C++ -*----------------------------------*\
+  =========                 |
+  \\      /  F ield         | OpenFOAM: The Open Source CFD Toolbox
+   \\    /   O peration     | Website:  https://openfoam.org
+    \\  /    A nd           | Version:  9
+     \\/     M anipulation  |
+\*---------------------------------------------------------------------------*/
+FoamFile
+{
+    format      ascii;
+    class       dictionary;
+    object      blockMeshDict;
+}
+// * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * //
+/*---------------------------------------------------------------------------*\
+      inletLeft                 inletRight
+    |----------|               |----------|     Vertical Channel Dimensions:
+    |          |               |          |     w_chan = 100 microns (x-dir)
+    |          |  injuryWalls  |          |     l_chan = 150 microns (y-dir)
+    |           ---------------           |     h_chan = 50 microns (z-dir)
+    |                l_inj                |
+    |          |---------------|          |     Horizontal Channel Dimensions:
+    |          |  injuryWalls  |          |     l_inj = 150 microns (x-dir)
+    |  w_chan  |               |  w_chan  |     w_inj = 50 microns (y-dir)
+    |----------|               |----------|     h_inj = 20 microns (z-dir)
+     outletLeft                 outletRight
+
+\*---------------------------------------------------------------------------*/
+convertToMeters 1.0; // Not really meters -- length unit = mm
+
+#include "$FOAM_CASE/constant/inputParameters"
+
+W #calc "2.0*$w_chan + $l_inj"; // total width of H domain
+L #calc "$l_legs + $w_inj + $l_legs"; // total height of H domain
+
+vertices
+(
+    // left vertical channel
+    (0 0 0) //v0 
+    ($w_chan 0 0) //v1
+    ($w_chan $L 0) //v2
+    (0 $L 0) //v3
+    (0 0 $h_chan) //v4 
+    ($w_chan 0 $h_chan) //v5
+    ($w_chan $L $h_chan) //v6
+    (0 $L $h_chan) //v7
+    
+    // injury region
+    ($w_chan $l_legs $z1_inj) //v8
+    ($w_chan_pls_l_inj $l_legs $z1_inj) //v9
+    ($w_chan_pls_l_inj $l_legs_pls_w_inj $z1_inj) //v10
+    ($w_chan $l_legs_pls_w_inj $z1_inj) //v11
+    ($w_chan $l_legs $z2_inj) //v12
+    ($w_chan_pls_l_inj $l_legs $z2_inj) //v13
+    ($w_chan_pls_l_inj $l_legs_pls_w_inj $z2_inj) //v14
+    ($w_chan $l_legs_pls_w_inj $z2_inj) //v15
+
+    // right vertical channel
+    ($w_chan_pls_l_inj 0 0) //v16
+    ($W 0 0) //v17
+    ($W $L 0) //v18
+    ($w_chan_pls_l_inj $L 0) //v19
+    ($w_chan_pls_l_inj 0 $h_chan) //v20
+    ($W 0 $h_chan) //v21
+    ($W $L $h_chan) //v22
+    ($w_chan_pls_l_inj $L $h_chan) //v23
+    
+);
+
+blocks
+(
+    hex (0 1 2 3 4 5 6 7) 
+        ($NxLegs $NyLegs $Nz) 
+        simpleGrading 
+        (
+            $RxLegsLeft //x-dir
+            ( //y-dir
+                (0.33333 0.29166 $RyLegsLow) // % of y-length, % of cells, expansion 
+                (0.33333 0.41666 $Ry_inj)  
+                (0.33333 0.29166 $RyLegsUp) 
+            )  
+            ( //z-dir
+                (0.3 0.25 $Rz_back) // % of z-length, % of cells, expansion 
+                (0.4 0.5 $Rz_inj) 
+                (0.3 0.25 $Rz_front) 
+            ) 
+        )  
+
+    hex (8 9 10 11 12 13 14 15) ($NxMid $NyMid $NzMid) simpleGrading (1 1 1) //blk1
+
+    hex (16 17 18 19 20 21 22 23) 
+        ($NxLegs $NyLegs $Nz) 
+        simpleGrading 
+        (
+            $RxLegsRight //x-dir
+            ( //y-dir
+                (0.33333 0.29166 $RyLegsLow) // % of y-length, % of cells, expansion 
+                (0.33333 0.41666 $Ry_inj)  
+                (0.33333 0.29166 $RyLegsUp) 
+            )   
+            ( //z-dir
+                (0.3 0.25 $Rz_back) // 30% of z-length, 25% of cells, expansion = 0.5
+                (0.4 0.5 $Rz_inj) // 40% of z-length, 50% of cells, expansion = 1
+                (0.3 0.25 $Rz_front) // 30% of z-length, 25% of cells, expansion = 2
+            ) 
+             
+        )
+);
+
+edges
+(
+);
+
+
+boundary
+(
+    inletLeft
+    {
+        type patch;
+        faces
+        (
+            (3 7 6 2)
+        );
+    }
+
+    inletRight
+    {
+        type patch;
+        faces
+        (
+	        (19 23 22 18)
+        );
+    }
+
+    outletLeft
+    {
+        type patch;
+        faces
+        (
+	        (0 4 5 1)
+        );
+    }
+    
+    outletRight
+    {
+        type patch;
+        faces
+        (
+	        (16 20 21 17)
+        );
+    }
+
+    injuryWalls
+    {
+        type patch;
+        faces
+        (
+            (8 12 13 9)
+            (11 15 14 10)
+            (8 9 10 11)
+            (12 13 14 15)
+        );
+    }
+    
+    leftChannelInnerWall
+    {
+        type wall;
+        faces
+        (
+            (5 1 2 6)
+        );
+    }
+
+    leftChannelInnerWall_small
+    {
+        type wall;
+        faces
+        (
+            (12 8 11 15)
+        );
+    }
+
+    rightChannelInnerWall
+    {
+        type wall;
+        faces
+        (
+            (16 20 23 19)
+        );
+    }
+
+    rightChannelInnerWall_small
+    {
+        type wall;
+        faces
+        (
+            (13 9 10 14)
+        );
+    }
+
+    fixedWalls
+    {
+        type wall;
+        faces
+        (
+            // block 0
+            (0 1 2 3)
+            (4 5 6 7)
+            (0 4 7 3)
+
+            // block 2
+            (16 17 18 19)
+            (20 21 22 23)
+            (21 17 18 22)
+        );
+    }
+
+);
+
+
+mergePatchPairs
+(
+    (leftChannelInnerWall leftChannelInnerWall_small)
+    (rightChannelInnerWall rightChannelInnerWall_small)
+);
+
+// ************************************************************************* //

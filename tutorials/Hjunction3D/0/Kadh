@@ -1,0 +1,139 @@
+/*--------------------------------*- C++ -*----------------------------------*\
+  =========                 |
+  \\      /  F ield         | OpenFOAM: The Open Source CFD Toolbox
+   \\    /   O peration     | Website:  https://openfoam.org
+    \\  /    A nd           | Version:  9
+     \\/     M anipulation  |
+\*---------------------------------------------------------------------------*/
+FoamFile
+{
+    format      ascii;
+    class       volScalarField;
+    object      Kadh;
+}
+// * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * //
+
+dimensions      [0 3 -1 0 0 0 0];
+
+internalField  #codeStream
+    {
+	// Get length and adhesion parameters
+	#include "$FOAM_CASE/constant/inputParameters"
+
+    code
+    #{
+        const IOdictionary& d = static_cast<const IOdictionary&>(dict);
+        const fvMesh& mesh = refCast<const fvMesh>(d.db());
+        scalarField fld(mesh.nCells(), 0);
+
+        forAll(mesh.C(),cellI)
+        {
+            scalar adh = $Pdiam;
+
+            scalar bottom = $l_legs;
+            scalar bottom_pls_adh = bottom + adh;
+            scalar top = $l_legs_pls_w_inj;
+            scalar top_minus_adh = top - adh;
+
+            scalar left = $w_chan;
+            scalar right = $w_chan_pls_l_inj;
+
+            scalar back = $z1_inj;
+            scalar back_pls_adh = back + adh;
+            scalar front = $z2_inj;
+            scalar front_minus_adh = front - adh;
+
+
+            vector CC = mesh.C()[cellI];
+            
+            if (CC.x() > left && CC.x() < right)
+            {
+                // bottom
+                if(CC.y() >= bottom && CC.y() <= bottom_pls_adh)
+                {
+                    fld[cellI] = $kadh_val;
+                }
+
+                // top
+                if(CC.y() >= top_minus_adh && CC.y() <= top)
+                {
+                    fld[cellI] = $kadh_val;
+                }
+
+                // back 
+                if(CC.z() >= back && CC.z() <= back_pls_adh)
+                {
+                    fld[cellI] = $kadh_val;
+                }
+
+                // front
+                if(CC.z() >= front_minus_adh && CC.z() <= front)
+                {
+                    fld[cellI] = $kadh_val;
+                }
+            }
+        }
+
+        
+        writeEntry(os, "", fld);
+    #};
+
+    //- Optional:
+    codeInclude
+    #{
+        #include "fvCFD.H"
+    #};
+
+    //- Optional:
+    codeOptions
+    #{
+        -I$(LIB_SRC)/finiteVolume/lnInclude  \
+        -I$(LIB_SRC)/meshTools/lnInclude \
+    #};
+};
+
+
+boundaryField
+{
+    inletLeft
+    {
+        type            zeroGradient;
+    }
+
+    inletRight
+    {
+        type            zeroGradient;
+    }
+    
+    outletLeft
+    {
+        type            zeroGradient;
+    }
+
+    outletRight
+    {
+        type            zeroGradient;
+    }
+
+    injuryWalls
+    {
+        type            zeroGradient;
+    }
+    
+    fixedWalls
+    {
+        type            zeroGradient;
+    }
+
+    leftChannelInnerWall
+    {
+        type            zeroGradient;
+    }
+
+    rightChannelInnerWall
+    {
+        type            zeroGradient;
+    }
+}
+
+// ************************************************************************* //
