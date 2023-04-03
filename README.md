@@ -22,7 +22,7 @@ $ wmake
 ```
 
 ## Tutorial cases
-The clotFoam download comes with a tutorial for simulating platelet mediated coagulation in a 2D \[240,60] micron rectangle. The injury length is set to 90 microns, centered in the middle of the bottom wall of the vessel.  To run this simulation, navigate back to the main clotFoam directory, then to the tutorials/rectangle2D directory:
+The clotFoam download comes with two tutorials for simulating platelet mediated coagulation.  The rectangle2D case simulates thrombosis in a 2D \[240,60] micron rectangle with an injury length of 90 microns, centered in the middle of the bottom wall of the vessel.  The Hjunction3D case simulates hemostasis in an H-shaped micro fluidic device as described in Schoeman et al.  In both cases, the parameters for the simulation can be edited in the $FOAM_CASE/constan/inputParameters file, and in the $FOAM_CASE/system/controlDict file. To run either of these simulations, navigate back to the main clotFoam directory, then to the desired tutorial directory.  For example tutorials/rectangle2D:
 
 ```
 $ cd ../tutorials/rectangle2D
@@ -32,7 +32,7 @@ $ blockMesh
 $ clotFoam
 ```
 
-The platelet-mediated coagulation modeled by clotFoam occurs on the real time scale of 10s of minutes.  Therefore, it may take upwards of one day of compute time to simulate clot growth.  
+The platelet-mediated coagulation modeled by clotFoam occurs on the real time scale of 10's of minutes.  Therefore, it may take upwards of one day of compute time to simulate clot growth.  
 
 ## Parallelization
 To run clotFoam in parallel with 6 processors, first edit the decomposeParDict file located in the system directory so that the number of subdomains is 6, and the decomposition method is scotch:
@@ -140,5 +140,9 @@ If you use clotFoam in your work. Please use the following to cite our work:
 
 
 ## References
-* K. Leiderman and A. L. Fogelson, Grow with the flow: a spatial–temporal model of platelet deposition and blood coagulation under flow. Mathematical Medicine and Biology: a journal of the IMA, 28(1):47–84, 2011.
-* A. L. Fogelson and A. L. Kuharsky. Membrane binding-site density can modulate activation thresholds in enzyme systems. Journal of Theoretical Biology, 193(1):1–18, 1998.
+* K. Leiderman and A. L. Fogelson, Grow with the flow: a spatial–temporal model of platelet deposition and blood coagulation under flow. Mathematical Medicine and Biology: a journal of the IMA, 28(1):47–84, 2011. [https://doi.org/10.1093/imammb/dqq005](https://doi.org/10.1093/imammb/dqq005)
+* A. L. Fogelson and A. L. Kuharsky. Membrane binding-site density can modulate activation thresholds in enzyme systems. Journal of Theoretical Biology, 193(1):1–18, 1998. [https://doi.org/10.1006/jtbi.1998.0670](https://doi.org/10.1006/jtbi.1998.0670)
+* R. M. Schoeman, K. Rana, N. Danes, M. Lehmann, J. A. Di Paola, A. L. Fogelson, K. Leiderman, K.B. Neeves, A microfluidic model of hemostasis sensitive to platelet function and coagulation, Cellular and molecular
+bioengineering 10 (2017) 3–15. [https://doi.org/10.1007/s12195-016-0469-0](https://doi.org/10.1007/s12195-016-0469-0)
+
+
