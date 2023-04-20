@@ -138,6 +138,8 @@ The work was generously supported by grants from the National Science Foundation
 ## Citing This Work
 If you use clotFoam in your work. Please use the following to cite our work:
 
+D. Montgomery, F. Municchi, K. Leiderman, clotFoam: An Open‐Source Framework to Simulate Blood Clot Formation Under Flow, arXiv, 2023, [https://doi.org/10.48550/arXiv.2304.09180](https://doi.org/10.48550/arXiv.2304.09180).
+
 
 ## References
 * K. Leiderman and A. L. Fogelson, Grow with the flow: a spatial–temporal model of platelet deposition and blood coagulation under flow. Mathematical Medicine and Biology: a journal of the IMA, 28(1):47–84, 2011. [https://doi.org/10.1093/imammb/dqq005](https://doi.org/10.1093/imammb/dqq005)
