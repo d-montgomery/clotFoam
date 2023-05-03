@@ -1,0 +1,184 @@
+/*--------------------------------*- C++ -*----------------------------------*\
+  =========                 |
+  \\      /  F ield         | OpenFOAM: The Open Source CFD Toolbox
+   \\    /   O peration     | Website:  https://openfoam.org
+    \\  /    A nd           | Version:  9
+     \\/     M anipulation  |
+\*---------------------------------------------------------------------------*/
+FoamFile
+{
+    format      ascii;
+    class       volScalarField;
+    object      plt_Pmu;
+}
+// * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * //
+
+dimensions      [0 -3 0 0 0 0 0];
+
+internalField   uniform 0;
+
+boundaryField
+{
+    inletVessel
+    {
+        type            codedFixedValue;
+        value           uniform 0;
+        name            Pmu_nearWallProfile;
+
+        code
+        #{
+            /*
+             Near-wall excess platelet profile motivated by Eckstein 1991
+             Pmu = Plt_0 * C0 * s(y), 
+             where s(y) = 1 + K*R(y)^18 * (1 - R), 
+                   R(y) = abs(y - r) / r, 
+                      r = radius of vessel,
+                   1/C0 = 1 / d * integral( s(y)*dy ),
+                      d = diamter of vessel
+                      K : determines amplitude of shape
+             Use with shear rates of 500, 1000, 1500 1/s.
+             Note that K = 0 provides a uniform profile
+
+             ** Code has been written for serial and parallel runs **
+        */
+
+            const vectorField& Cf = patch().Cf(); // value a face center
+            scalarField s (patch().size(), 0.); // field for storing shape s(y)
+
+            // Normal concentration of platelets at inlet  
+            const scalar Plt_0 = readScalar
+            (
+                db().lookupObject<IOdictionary>
+                (
+                    "inputParameters"
+                ).lookup("Plt_0")
+            );
+            
+            // wall shear rate inverse seconds
+            const scalar shr_rt = readScalar
+            (
+                db().lookupObject<IOdictionary>
+                (
+                    "inputParameters"
+                ).lookup("inletShearRate")
+            );
+
+            // Height of the vessel (may need to change for other domains)
+            const scalar w_ves = readScalar
+            (
+                db().lookupObject<IOdictionary>
+                (
+                    "inputParameters"
+                ).lookup("w_ves")
+            );
+
+            // Height of the extravasc. channel (may need to change for other domains)
+            const scalar l_ext = readScalar
+            (
+                db().lookupObject<IOdictionary>
+                (
+                    "inputParameters"
+                ).lookup("l_ext")
+            );
+
+            // Depth of the vessel in z-dir (may need to change for other domains)
+            const scalar dz = readScalar
+            (
+                db().lookupObject<IOdictionary>
+                (
+                    "inputParameters"
+                ).lookup("Zdir")
+            );
+
+            //--- Determine scale K for shape function (amplitude near wall)
+            scalar K = 0.; // K = 0 provides uniform profile
+            if ( mag(shr_rt - 500.) < 1.e-10 ) // shr_rt = 500 1/s
+            {
+                K = 202.; // -> Peak-to-centre ratio ~5
+            }
+            else if ( mag(shr_rt - 1000.) < 1.e-10 ) // shr_rt = 1000 1/s
+            {
+                K = 330.; // -> Peak-to-centre ratio ~7.5
+            }
+            else if ( mag(shr_rt - 1500.) < 1.e-10) // shr_rt = 500 1/s
+            {
+                K = 455.; // -> Peak-to-centre ratio ~10
+            }
+            else
+            {
+                Info << "Shear rate not defined for platelet margination function" 
+                << exit(FatalError);
+            }
+
+            // Get initial shape of profile
+            scalar r = w_ves / 2.; // vessel radius (may need to change for other domains)
+            scalar d = w_ves; // diameter of the vessel
+            forAll(Cf,faceI)
+            {
+                scalar y = Cf[faceI][1];
+                scalar R = std::abs(y - l_ext - r) / r; // shifted up by l_ext
+                s[faceI] = 1. + K * pow( R, 18) * (1 - R);
+            }
+
+            //--- Integrate the profile with midpoint rule
+            // Face area magnitude magSf = dy*dz 
+            // (in 2D only want dy, so divide by dz)
+            const scalarField dy = patch().magSf() / dz; 
+            scalar intgrl_s = 0.;
+            forAll(s,k)
+            {
+                intgrl_s = intgrl_s + dy[k] * s[k];
+            }
+
+            // If parallel run, must sum all local intgrl_s values
+            if (Pstream::nProcs() > 1) 
+            {
+                reduce(intgrl_s, sumOp<scalar>()); 
+            }
+
+            // Set the field values at the inlet
+            scalar C0 = d / intgrl_s;
+            operator == (Plt_0 * C0 * s); 
+
+            /*
+            // check that the integral of the profile = integral Plt_0
+            scalar intconst = Plt_0 * y_max;
+            scalar intgrl_srofile = 0;
+            for(int k = 0; k < n-1; k++)
+            {
+                intgrl_profile = intgrl_profile + 0.5 * h[k+1] * Plt_0 * C0(s[k]+s[k+1]);
+            }
+            Info << "intconst = " << intconst << endl;
+            Info << "intgrl_profile = " << intgrl_srofile << endl;
+            */
+
+        #};
+    }
+    
+    outletVessel
+    {
+        type            zeroGradient;
+    }
+
+    outletExt
+    {
+        type            zeroGradient;
+    }
+
+    fixedWalls
+    {
+        type            zeroGradient;
+    }
+    
+    injuryWalls
+    {
+        type            zeroGradient;
+    }
+    
+    frontAndBack
+    {
+        type            empty;
+    }
+}
+
+// ************************************************************************* //

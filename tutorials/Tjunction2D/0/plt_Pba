@@ -1,0 +1,53 @@
+/*--------------------------------*- C++ -*----------------------------------*\
+  =========                 |
+  \\      /  F ield         | OpenFOAM: The Open Source CFD Toolbox
+   \\    /   O peration     | Website:  https://openfoam.org
+    \\  /    A nd           | Version:  9
+     \\/     M anipulation  |
+\*---------------------------------------------------------------------------*/
+FoamFile
+{
+    format      ascii;
+    class       volScalarField;
+    object      plt_Pba;
+}
+// * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * //
+
+dimensions      [0 -3 0 0 0 0 0];
+
+internalField   uniform 0;
+
+boundaryField
+{
+    inletVessel
+    {
+        type            zeroGradient;
+    }
+    
+    outletVessel
+    {
+        type            zeroGradient;
+    }
+
+    outletExt
+    {
+        type            zeroGradient;
+    }
+    
+    fixedWalls
+    {
+        type            zeroGradient;
+    }
+    
+    injuryWalls
+    {
+        type            zeroGradient;
+    }
+    
+    frontAndBack
+    {
+        type            empty;
+    }
+}
+
+// ************************************************************************* //
