@@ -9,11 +9,11 @@ FoamFile
 {
     format      ascii;
     class       volScalarField;
-    object      Kadh;
+    object      Hadh;
 }
 // * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * //
 
-dimensions      [0 3 -1 0 0 0 0];
+dimensions      [0 0 0 0 0 0 0];
 
 internalField  #codeStream
     {
@@ -35,12 +35,12 @@ internalField  #codeStream
                 // Left side of channel
                 if(CC.x() >= $l_edge_leftAdh && CC.x() <= $r_edge_leftAdh)
                 { 
-                    fld[cellI] = $kadh_val;
+                    fld[cellI] = 1.;
                 }
                 // Right side of channel
                 if(CC.x() >= $l_edge_rightAdh && CC.x() <= $r_edge_rightAdh)
                 { 
-                    fld[cellI] = $kadh_val;
+                    fld[cellI] = 1.;
                 }
             }
 

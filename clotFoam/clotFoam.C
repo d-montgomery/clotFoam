@@ -70,7 +70,9 @@ Author: David Montgomery
 #include "pisoControl.H"
 #include "mathematicalConstants.H"
 
-// Classes for RHS functions for each species
+// Classes/structures for managing various species
+#include "plateletConstants.H"
+#include "chemConstants.H"
 #include "Species_baseClass.H"
 #include "Species_platelet.H"
 #include "Species_seBound.H"

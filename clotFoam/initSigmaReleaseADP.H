@@ -79,7 +79,7 @@ forAll(ddt_Pbnew,i)
                     IOobject::NO_READ,                                      
                     IOobject::NO_WRITE
                 ),  
-                0*Pmax*Theta_B / runTime.deltaT()
+                0*pltConst.Pmax*Theta_B / runTime.deltaT()
             )   
         );  
     }

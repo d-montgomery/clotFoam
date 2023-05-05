@@ -11,7 +11,7 @@
     solve(
         fvm::Sp(1.0,eta)
         - fvc::Sp(1.0,eta)
-        -fvm::laplacian(l_D_eta*l_D_eta/4.0,eta)
+        -fvm::laplacian(pltConst.l_D_eta*pltConst.l_D_eta/4.0, eta)
     ); 
     eta.correctBoundaryConditions(); 
     eta = max(0*eta, min(1.+0*eta,eta));
@@ -25,7 +25,7 @@
 }
 
 // Update the BC's for the mobile Platelet Species
-for(int i=0; i < num_plts_mobile; i++)
+for(int i=0; i < pltConst.num_plts_mobile; i++)
 {
     Plt.field[i].correctBoundaryConditions();
 }

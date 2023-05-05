@@ -55,7 +55,7 @@ boundaryField
                 this->refGrad() = 1/D * (K * field + F) // !no negative in front!
                 this->valueFraction() = 0;
 
-            For this field E1, set K = 0 and F = Kc0_cat * C0 so that: 
+            For this field E1, set K = 0 and F = kC0_cat * C0 so that: 
                 this->refValue() = 0, this->refGrad() =  F / D;
             \* * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * */ 
 
@@ -68,12 +68,12 @@ boundaryField
                 ).lookup("Dc")
             );
             
-            const scalar Kc0_cat = readScalar
+            const scalar kC0_cat = readScalar
             (
                 db().lookupObject<IOdictionary>
                 (
                     "inputParameters"
-                ).lookup("Kc0_cat")
+                ).lookup("kC0_cat")
             );
 
             // Lookup necessary fields for reaction at boundary
@@ -85,7 +85,7 @@ boundaryField
             // Get the direction of the deltaCoeffs
             const vectorField deltaVec = patch().delta();
 
-            scalarField F = Kc0_cat * C0;
+            scalarField F = kC0_cat * C0;
 
             this->refGrad() = F / D;
             
