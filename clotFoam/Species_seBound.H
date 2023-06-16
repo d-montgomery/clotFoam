@@ -2,9 +2,7 @@ class Species_seBound : public Species
 {
     private:
         label injuryPatchID; 
-        const scalar Kc0_on; //value only, no dimensions!
-        const scalar Kc0_off; //value only, no dimensions!
-        const scalar Kc0_cat; //value only, no dimensions!
+        const chemConstants& c;
         Species *fluidPhase {nullptr};
 
     public: 
@@ -13,14 +11,13 @@ class Species_seBound : public Species
         (
             const int& numSpecies_,
             const label& injuryPatchID_,
-            const scalar Kc0_on_, 
-            const scalar Kc0_off_, 
-            const scalar Kc0_cat_
+            const chemConstants& c_
         ) 
         : 
             Species(numSpecies_), 
             injuryPatchID(injuryPatchID_),
-            Kc0_on(Kc0_on_), Kc0_off(Kc0_off_), Kc0_cat(Kc0_cat_)
+            c(c_),
+            fluidPhase(nullptr)
         {}
 
         void setPtrs(Species& fluidPhase_)
@@ -58,6 +55,11 @@ class Species_seBound : public Species
             const auto& C0 = input[1].boundaryField()[injuryPatchID];
             const auto& S1 = fluidPhase->input[0].boundaryField()[injuryPatchID];
 
+            //value only, no dimensions!
+            const auto& kC0_on = c.kC0_on.value(); 
+            const auto& kC0_off = c.kC0_off.value(); 
+            const auto& kC0_cat = c.kC0_cat.value(); 
+
             // As far as I know, there are not dimensions for .boundaryField()
             // therefore the kinetic rates need to be passed in as scalars
             // and not dimensionedScalars.  I could be wrong, but this works.
@@ -65,12 +67,12 @@ class Species_seBound : public Species
             forAll(k[0].boundaryField()[injuryPatchID], faceI)
             {
                 k[0].boundaryFieldRef()[injuryPatchID][faceI] =
-                    -1.*Kc0_on * S1[faceI] * E0[faceI]
-                    + (Kc0_off + Kc0_cat) * C0[faceI];
+                        -kC0_on * S1[faceI] * E0[faceI]
+                        + (kC0_off + kC0_cat) * C0[faceI];
             
                 k[1].boundaryFieldRef()[injuryPatchID][faceI] =
-                    Kc0_on * S1[faceI] * E0[faceI]
-                    - (Kc0_off + Kc0_cat)*C0[faceI];    
+                        kC0_on * S1[faceI] * E0[faceI]
+                        - (kC0_off + kC0_cat)*C0[faceI];    
             }     
         }
 };

@@ -70,7 +70,7 @@ boundaryField
                 this->refGrad() = 1/D * (K * field + F)
                 this->valueFraction() = 0;
 
-            For this field S1, set K = - Kc0_on*E0 and F = Kc0_off*C0 so that: 
+            For this field S1, set K = - kC0_on*E0 and F = kC0_off*C0 so that: 
                 this->refValue() = 0, this->refGrad() = (K*field + F) / D;
             \* * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * */ 
 
@@ -86,20 +86,20 @@ boundaryField
                 ).lookup("Dc")
             );
 
-            const scalar Kc0_on = readScalar
+            const scalar kC0_on = readScalar
             (
                 db().lookupObject<IOdictionary>
                 (
                     "inputParameters"
-                ).lookup("Kc0_on")
+                ).lookup("kC0_on")
             );
 
-            const scalar Kc0_off = readScalar
+            const scalar kC0_off = readScalar
             (
                 db().lookupObject<IOdictionary>
                 (
                     "inputParameters"
-                ).lookup("Kc0_off")
+                ).lookup("kC0_off")
             );
 
             // Lookup necessary fields for reaction at boundary
@@ -112,8 +112,8 @@ boundaryField
                 patch().lookupPatchField<volScalarField, scalar>("seBound_C0")
             );
 
-            scalarField K = -Kc0_on * E0;
-            scalarField F = Kc0_off * C0;
+            scalarField K = -kC0_on * E0;
+            scalarField F = kC0_off * C0;
 
             this->refGrad() = (K*field + F) / D;
             

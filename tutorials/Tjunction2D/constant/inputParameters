@@ -20,14 +20,30 @@ FoamFile
 /* ------------------------------------------------------------------------- *\
    Geometry and Mesh Parameters
 \*---------------------------------------------------------------------------*/
-// Lengths of the rectangle (all in mm, don't forget a decimal!)
-x_max 240.0e-03; // width of left and right channel 
-y_max 60.0e-03; // total length of vessel 
-w_inj 90.0e-03; // length of injury from rectangle
+// Lengths of the T Domain (all in mm, don't forget a decimal!)
+w_ves 225.0e-03; // width of left and right channel 
+l_up 210.0e-03; // length of vessel upstream of injury
+l_down 210.0e-03; // length of vessel downstream of injury
+w_inj 20.0e-03; // length of injury from rectangle
+l_se 100.0e-03; // length of the adhesion region
+l_ves #calc "$l_up+$l_down+$w_inj"; // total length of vessel 
+l_ext #calc "3.0/8.0 * $l_ves"; // length of the extravascular channel
 
 // Mesh parameters integers: these should match the rectangular domain
-Nx 80; // x cells in upper part of vessel 
-Ny 20; // x cells in upper part of vessel 
+Nx_up 43; // x cells in upper part of vessel 
+Nx_inj 7; // x cells in upper part of vessel 
+Nx_down 21; // x cells in lower part of vessel 
+Ny_ves 41; // y cells in the main vessel
+Ny_se 33; // y cells in injury block
+Ny_ext 15; // y cells below injury block
+
+// Grading parameters for each block
+Rx_up 0.375;
+Rx_inj 1;
+Rx_down 8;
+Ry_ves 3;
+Ry_se 1;
+Ry_ext 0.5;
 
 // Mesh parameters in z-direction
 Zdir 10e-03; // depth in z-direction
@@ -43,7 +59,8 @@ inletShearRate 1000.0; // inlet shear rate [1/s]
 /* ------------------------------------------------------------------------- *\
    Pressure Parameters (kinematic pressure)
 \*---------------------------------------------------------------------------*/
-Pv0 0.0; // outlet kinematic pressure [mm^2 / s^2]
+Pv0 94922.2101495075; // outlet kinematic pressure [mm^2 / s^2]
+Pm0 0.0; // Injury channel outlet kinematic pressure [mm^2 / s^2]
 
 /* ------------------------------------------------------------------------- *\
    Platelet Parameters
@@ -51,7 +68,7 @@ Pv0 0.0; // outlet kinematic pressure [mm^2 / s^2]
 num_plts 4; // Total Number of platelet species (Integer)
 num_plts_mobile 2; // Number of mobile platelet species (for transport solve)
 M_rxn 2; // Number of time steps for reactions solve: h_react = dt / M_react
-Pdiam 3.0e-03; // Diameter of one platelet [mm]
+Pdiam 3e-03; // Diameter of one platelet [mm]
 Pmax 6.67e+07; // Maxiumum packing density [1 / mm^3]
 Dp 2.5e-05; // Diffusion rate for platelets [mm^2 / s]
 Plt_0 2.5e+05; // Mobile platelet inlet number density [1 / mm^3]
@@ -60,12 +77,12 @@ tf_Plt 0.02; // When the platelets reach Plt_0 at inlet
 
 // Platelet Adhesion Params
 kAdh 3.3212e-08; // rate of adhesion [mm^3 / s]
-kAdh_len #calc "$w_inj"; // Length of the adhesion region [mm]
+kAdh_len $l_se; // Length of the adhesion region [mm]
 
 // Platelet Cohesion Params
 kCohPmax 1.0e+4; // Cohesion constant times Pmax [1/s]
 eta_t 0.1; // threshold value for g(eta) [nondim]
-eta_ast 0.4; // eta_ast + eta_t = 0.25 - 0.75 [nondim]
+eta_ast 0.4; // eta_ast_val + eta_t_val = 0.25 - 0.75 [nondim]
 l_D_eta #calc "2.0*$Pdiam"; // length of "diffusion" for eta [mm]
 
 // Platelet Activation Params
@@ -99,9 +116,9 @@ N_Avo 6.02214076e+14; // [1 / nanomol]
 Dc 5.0e-05; // [mm^2/s]
 
 // Initial concentrations
-E0_IC 1.5e-07; // Concentration of TF:VIIa on SE Wall [nanomol / mm^2]
-S1_IC 1.7e-04; // Concentration of X at inlet [nanomol / mm^3]
-S2_IC 1.4e-03; // Concentration of II at inlet [nanomol / mm^3]
+E0_IC 1.5e-07; // Concentration of E0 on SE Wall [nanomol / mm^2]
+S1_IC 1.7e-04; // Concentration of S1 at inlet [nanomol / mm^3]
+S2_IC 1.4e-03; // Concentration of S2 at inlet [nanomol / mm^3]
 
 // Number of binding sites on platelet surface for specific chems
 N_1 2700.0;
@@ -135,8 +152,17 @@ kS2_off 5.9; // Off-rate for II [1/s]
 /* ------------------------------------------------------------------------- *\
    Other lengths used by multiple files (DON'T EDIT!!!!!)
 \*---------------------------------------------------------------------------*/
-// Define the left and right edges of the adhesion region
-l_edge_Adh #calc "($x_max-$w_inj)/2.0";
-r_edge_Adh #calc "($x_max+$w_inj)/2.0";
+// lengths of the upstream and downstream portion of the main vessel
+l_extout #calc "$l_ext-$l_se"; // length of ext. channel below the adh. region
+
+// Define the left and right edges of the adhesion regions
+l_edge_leftAdh #calc "$l_up";
+r_edge_leftAdh #calc "$l_up + $Pdiam";
+l_edge_rightAdh #calc "$l_up + $w_inj-$Pdiam";
+r_edge_rightAdh #calc "$l_up +$w_inj";
+
+// Define the top and bottom edges of the adhesion regions
+top_edge_Adh #calc "$l_ext";
+bot_edge_Adh #calc "$l_ext - $kAdh_len";
 
 // ************************************************************************* //

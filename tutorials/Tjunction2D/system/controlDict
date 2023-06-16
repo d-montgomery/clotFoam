@@ -28,7 +28,7 @@ deltaT          1e-5;
 
 writeControl    adjustableRunTime;
 
-writeInterval   0.1; 
+writeInterval   0.1;
 
 purgeWrite      0;
 
@@ -63,13 +63,13 @@ functions
         This function determines how often tau and ddt_Pbnew_i are written.  
         These fields are used in calculating the source term sigma_release for
         ADP.  Writing the fields every writeTime is not advised, however, not
-        writing them would disable users from restarting code at times t > 0. 
+        writing them would disable users from restarting code at times > 0. 
         For long simulations (e.g. endTime = 900s), consider writing these 
         fields every 100s.
 
-        There should be N = (sigma_Tf/sigma_dt + 1) fields for ddt_Pbnew_i.
+        There should be N = (sigma_Tf/sigma_dt + 1) fields for ddt_Pbnew.
         The defaults are sigma_dt = 0.25 with sigma_Tf = 6, so that N+1 = 25.  
-        Add or subtract ddt_Pbnew_i as necessary.  Lastly, the writeTime 
+        Add or subtract ddt_Pbnew_# as necessary.  Lastly, the writeTime 
         should be in multiples of sigma_dt. 
         
         If you don't want to write these fields at anytime, simply delete
@@ -110,7 +110,7 @@ functions
         );
         writeOption     anyWrite;
         writeControl    writeTime;
-        writeInterval   2;
+        writeInterval   10;
     }
 }
 

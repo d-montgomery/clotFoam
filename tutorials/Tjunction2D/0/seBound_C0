@@ -9,54 +9,45 @@ FoamFile
 {
     format      ascii;
     class       volScalarField;
-    object      sigma_release;
+    object      seBound_C0;
 }
 // * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * //
 
-dimensions      [0 -3 -1 0 1 0 0];
+dimensions      [0 -2 0 0 1 0 0];
 
 internalField   uniform 0;
 
 boundaryField
 {
-    inletLeft
-    {
-        type            zeroGradient;
-    }
-
-    inletRight
+    inletVessel
     {
         type            zeroGradient;
     }
     
-    outletLeft
+    outletVessel
     {
         type            zeroGradient;
     }
 
-    outletRight
+    outletExt
     {
         type            zeroGradient;
     }
 
-    injuryWalls
-    {
-        type            zeroGradient;
-    }
-    
     fixedWalls
     {
         type            zeroGradient;
     }
-
-    leftChannelInnerWall
+    
+    injuryWalls
     {
-        type            zeroGradient;
+        type            calculated;
+        value           uniform 0.0;
     }
-
-    rightChannelInnerWall
+    
+    frontAndBack
     {
-        type            zeroGradient;
+        type            empty;
     }
 }
 

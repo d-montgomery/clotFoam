@@ -46,10 +46,10 @@
         );
 
     // Diffusive Flux Field
-    surfaceScalarField DpW( Dp*W );
+    surfaceScalarField DpW( pltConst.Dp*W );
 
     // Transport the Mobile Platelets
-    for(int i=0; i < num_plts_mobile; i++)
+    for(int i=0; i < pltConst.num_plts_mobile; i++)
     {
         fvScalarMatrix PltTransportEqn
         (

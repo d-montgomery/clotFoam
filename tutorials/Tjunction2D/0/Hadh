@@ -9,55 +9,60 @@ FoamFile
 {
     format      ascii;
     class       volScalarField;
-    object      Kadh;
+    object      Hadh;
 }
 // * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * //
 
-dimensions      [0 3 -1 0 0 0 0];
+dimensions      [0 0 0 0 0 0 0];
 
 internalField  #codeStream
     {
 	// Get length and adhesion parameters
 	#include "$FOAM_CASE/constant/inputParameters"
 
-        code
-        #{
-            const IOdictionary& d = static_cast<const IOdictionary&>(dict);
-            const fvMesh& mesh = refCast<const fvMesh>(d.db());
-            scalarField fld(mesh.nCells(), 0);
+    code
+    #{
+        const IOdictionary& d = static_cast<const IOdictionary&>(dict);
+        const fvMesh& mesh = refCast<const fvMesh>(d.db());
+        scalarField fld(mesh.nCells(), 0);
 
-            forAll(mesh.C(),cellI)
+        forAll(mesh.C(),cellI)
+        {
+            vector CC = mesh.C()[cellI];
+            
+            if( CC.y() >= $bot_edge_Adh && CC.y() <= $top_edge_Adh )
             {
-            	vector CC = mesh.C()[cellI];
-                
-                if( CC.y() <= $Pdiam )
-            	{
-                    // Left side of channel
-            	    if(CC.x() >= $l_edge_Adh && CC.x() <= $r_edge_Adh)
-                    { 
-            	        fld[cellI] = $kadh_val;
-                    }
+                // Left side of channel
+                if(CC.x() >= $l_edge_leftAdh && CC.x() <= $r_edge_leftAdh)
+                { 
+                    fld[cellI] = 1.;
                 }
-
+                // Right side of channel
+                if(CC.x() >= $l_edge_rightAdh && CC.x() <= $r_edge_rightAdh)
+                { 
+                    fld[cellI] = 1.;
+                }
             }
 
-            
-            writeEntry(os, "", fld);
-        #};
+        }
 
-        //- Optional:
-        codeInclude
-        #{
-            #include "fvCFD.H"
-        #};
+        
+        writeEntry(os, "", fld);
+    #};
 
-        //- Optional:
-        codeOptions
-        #{
-            -I$(LIB_SRC)/finiteVolume/lnInclude  \
-            -I$(LIB_SRC)/meshTools/lnInclude \
-        #};
-    };
+    //- Optional:
+    codeInclude
+    #{
+        #include "fvCFD.H"
+    #};
+
+    //- Optional:
+    codeOptions
+    #{
+        -I$(LIB_SRC)/finiteVolume/lnInclude  \
+        -I$(LIB_SRC)/meshTools/lnInclude \
+    #};
+};
 
 
 boundaryField
@@ -68,6 +73,11 @@ boundaryField
     }
     
     outletVessel
+    {
+        type            zeroGradient;
+    }
+
+    outletExt
     {
         type            zeroGradient;
     }

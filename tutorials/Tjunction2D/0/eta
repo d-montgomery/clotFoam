@@ -9,37 +9,27 @@ FoamFile
 {
     format      ascii;
     class       volScalarField;
-    object      pltBound_C2;
+    object      eta;
 }
 // * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * //
 
-dimensions      [0 -3 0 0 1 0 0];
+dimensions      [0 0 0 0 0 0 0];
 
 internalField   uniform 0;
 
 boundaryField
 {
-    inletLeft
-    {
-        type            zeroGradient;
-    }
-
-    inletRight
+    inletVessel
     {
         type            zeroGradient;
     }
     
-    outletLeft
+    outletVessel
     {
         type            zeroGradient;
     }
 
-    outletRight
-    {
-        type            zeroGradient;
-    }
-
-    injuryWalls
+    outletExt
     {
         type            zeroGradient;
     }
@@ -48,15 +38,15 @@ boundaryField
     {
         type            zeroGradient;
     }
-
-    leftChannelInnerWall
+    
+    injuryWalls
     {
         type            zeroGradient;
     }
-
-    rightChannelInnerWall
+    
+    frontAndBack
     {
-        type            zeroGradient;
+        type            empty;
     }
 }
 

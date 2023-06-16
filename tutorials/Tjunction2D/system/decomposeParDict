@@ -8,44 +8,35 @@
 FoamFile
 {
     format      ascii;
-    class       volScalarField;
-    object      pltBound_S2b;
+    class       dictionary;
+    location    "system";
+    object      decomposeParDict;
 }
 // * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * //
 
-#include "$FOAM_CASE/constant/inputParameters"
+numberOfSubdomains 2;
 
-dimensions      [0 -3 0 0 1 0 0];
+method          scotch;
 
-internalField   uniform 0;
-
-boundaryField
+simpleCoeffs
 {
-    inletVessel
-    {
-        type            zeroGradient;
-    }
-    
-    outletVessel
-    {
-        type            zeroGradient;
-    }
-
-    fixedWalls
-    {
-        type            zeroGradient;
-    }
-    
-    injuryWalls
-    {
-        type            zeroGradient;
-    }
-    
-
-    frontAndBack
-    {
-        type            empty;
-    }
+    n               (2 1 1);
 }
+
+hierarchicalCoeffs
+{
+    n               (1 1 1);
+    order           xyz;
+}
+
+manualCoeffs
+{
+    dataFile        "";
+}
+
+distributed     no;
+
+roots           ( );
+
 
 // ************************************************************************* //

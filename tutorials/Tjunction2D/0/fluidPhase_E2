@@ -9,7 +9,7 @@ FoamFile
 {
     format      ascii;
     class       volScalarField;
-    object      pltBound_C2;
+    object      fluidPhase_E2;
 }
 // * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * //
 
@@ -27,6 +27,11 @@ boundaryField
     }
     
     outletVessel
+    {
+        type            zeroGradient;
+    }
+
+    outletExt
     {
         type            zeroGradient;
     }

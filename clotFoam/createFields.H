@@ -38,10 +38,6 @@ scalar pRefValue = 0.0;
 setRefCell(p, mesh.solutionDict().subDict("PISO"), pRefCell, pRefValue);
 mesh.setFluxRequired(p.name());
 
-// for openfoam-v10
-//setRefCell(p, mesh.solution().dict().subDict("PISO"), pRefCell, pRefValue);
-//mesh.schemes().setFluxRequired(p.name());
-
 /**************************************************************************
     Fields for Platelet Reactions
 ***************************************************************************/
@@ -60,46 +56,13 @@ volScalarField eta
     mesh
 );
 
-// k_adh Field
-Info<< "Reading field Kadh\n" << endl;
-volScalarField Kadh
+// Hadh Field (defines adhesion region)
+Info<< "Reading field Hadh\n" << endl;
+volScalarField Hadh
 (
     IOobject
     (
-        "Kadh",
-        runTime.timeName(),
-        mesh,
-        IOobject::MUST_READ,
-        IOobject::AUTO_WRITE
-    ),
-    mesh
-);
-
-/**************************************************************************
-    Fields for ADP and ADP source term
-***************************************************************************/
-// ADP Field
-Info<< "Reading field ADP\n" << endl;
-volScalarField ADP
-(
-    IOobject
-    (
-        "ADP",
-        runTime.timeName(),
-        mesh,
-        IOobject::MUST_READ,
-        IOobject::AUTO_WRITE
-    ),
-    mesh
-);
-
-// sigma_release Field
-Info<< "Reading field sigma_release\n" << endl;
-volScalarField sigma_release
-(
-    IOobject
-    (
-        "sigma_release",
+        "Hadh",
         runTime.timeName(),
         mesh,
         IOobject::MUST_READ,
@@ -120,10 +83,10 @@ volScalarField Theta_T
         "Theta_T",
         runTime.timeName(),
         mesh,
-        IOobject::MUST_READ,
+        IOobject::READ_IF_PRESENT,
         IOobject::AUTO_WRITE
     ),
-    mesh
+    0.0*eta
 );
 
 // Bound Platelet Fraction
@@ -135,36 +98,80 @@ volScalarField Theta_B
         "Theta_B",
         runTime.timeName(),
         mesh,
-        IOobject::MUST_READ,
+        IOobject::READ_IF_PRESENT,
         IOobject::AUTO_WRITE
     ),
-    mesh
+    0.0*eta
 );
 
 /**************************************************************************
-    Platelet Fields
+    Fields for ADP and ADP source term
 ***************************************************************************/
+// ADP Field
+Info<< "Reading field ADP\n" << endl;
+volScalarField ADP
+(
+    IOobject
+    (
+        "ADP",
+        runTime.timeName(),
+        mesh,
+        IOobject::READ_IF_PRESENT,
+        IOobject::AUTO_WRITE
+    ),
+    mesh,
+    dimensionedScalar(dimMoles/dimVolume, 0.),
+    eta.boundaryField().types()
+);
+
+// sigma_release Field
+Info<< "Reading field sigma_release\n" << endl;
+volScalarField sigma_release
+(
+    IOobject
+    (
+        "sigma_release",
+        runTime.timeName(),
+        mesh,
+        IOobject::READ_IF_PRESENT,
+        IOobject::AUTO_WRITE
+    ),
+    mesh,
+    dimensionedScalar(dimMoles/dimVolume/dimTime, 0.),
+    eta.boundaryField().types()
+);
+
+/**************************************************************************
+    Platelet Object
+- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - 
+1) Create derived Species object Plt
+2) Set the ptrList sizes
+3) Read in IC/BC for the following fields:
+        Plt.field[0] -> Mobile Unactivated
+        Plt.field[1] -> Mobile Activated
+        Plt.field[2] -> Bound Activated
+        Plt.field[3] -> SE Bound
+4) Initialize the PtrList/fields needed for RK solver
+***************************************************************************/
+Info<< "Creating species object for seBound Chemicals\n" << endl;
 
 // Object for for platelets
 Species_platelet Plt
 (
-    num_plts,
-    Pmax, Kadh, KcohPmax,
-    eta, eta_ast, eta_t, g0, 
-    ADP, kADP_Pla, ADP_ast,
-    ke2_Pla, e2_ast,
-    Theta_T, Theta_B
+    pltConst.num_plts,
+    pltConst,
+    Hadh, 
+    eta,  
+    ADP, 
+    Theta_T, 
+    Theta_B
 );
 
 // Set ALL ptrList Sizes
 Plt.setPtrListSize();
 
-// Plt.field[0] -> Mobile Unactivated
-// Plt.field[1] -> Mobile Activated
-// Plt.field[2] -> Bound Activated
-// Plt.field[3] -> SEBound Activated
-
 // Mobile Unactivated Platelet Field
+Info<< "Reading field plt_Pmu\n" << endl;
 Plt.field.set
 (
     0,
@@ -183,6 +190,7 @@ Plt.field.set
 );
 
 // Mobile Activated Platelet Field
+Info<< "Reading field plt_Pma\n" << endl;
 Plt.field.set
 (    
     1,
@@ -201,7 +209,7 @@ Plt.field.set
 );
 
 // Bound Activated Platelet Field
-Info<< "Reading field Pba\n" << endl;
+Info<< "Reading/creating field plt_Pba\n" << endl;
 Plt.field.set
 (
     2,
@@ -212,15 +220,15 @@ Plt.field.set
             "plt_Pba",
             runTime.timeName(),
             mesh,
-            IOobject::MUST_READ,
+            IOobject::READ_IF_PRESENT,
             IOobject::AUTO_WRITE
         ),
-        mesh
+        0.0*Plt.field[1]
     )
 );
 
 // Subendothelial-Bound Platelet Field
-Info<< "Reading field Pbse\n" << endl;
+Info<< "Reading/creating field plt_Pbse\n" << endl;
 Plt.field.set
 (
     3, 
@@ -231,10 +239,10 @@ Plt.field.set
             "plt_Pbse",
             runTime.timeName(),
             mesh,
-            IOobject::MUST_READ,
+            IOobject::READ_IF_PRESENT,
             IOobject::AUTO_WRITE
         ),
-        mesh
+        0.0*Plt.field[1]
     )
 );
 
@@ -242,7 +250,15 @@ Plt.field.set
 Plt.initializeRKFields();
 
 /**************************************************************************
-    SE-Bound Fields
+    SE-Bound Object
+ - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - 
+1) Create derived Species object seBound
+2) Set the ptrList sizes
+3) Read in IC/BC for the following fields:
+        seBound.field[0] -> E0
+        seBound.field[1] -> C0
+4) Initialize the PtrList/fields needed for RK solver
+5) Set initial conditions for seBound species
 ***************************************************************************/
 Info<< "Creating species object for seBound Chemicals\n" << endl;
 
@@ -251,13 +267,14 @@ Species_seBound seBound
 (
     num_seBound,
     injuryPatchID,
-    Kc0_on.value(), Kc0_off.value(), Kc0_cat.value()
+    chemConst
 );
 
 // Set ALL ptrList Sizes
 seBound.setPtrListSize();
 
 // E0 (TF:VIIa)
+Info<< "Reading field seBound_E0\n" << endl;
 seBound.field.set
 (
     0,
@@ -276,6 +293,7 @@ seBound.field.set
 );
 
 // C0 
+Info<< "Reading field seBound_C0\n" << endl;
 seBound.field.set
 (    
     1,
@@ -300,31 +318,32 @@ seBound.initializeRKFields();
 seBound.setInitialConcentration();
 
 /**************************************************************************
-    Fluid-Phase Fields
+    Fluid-Phase Object
+ - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - 
+1) Create derived Species object fluidPhase
+2) Set the ptrList sizes
+3) Read in IC/BC for the following fields:
+        fluidPhase.field[0] -> S1
+        fluidPhase.field[1] -> S2
+        fluidPhase.field[2] -> E1
+        fluidPhase.field[3] -> E2
+4) Initialize the PtrList/fields needed for RK solver
 ***************************************************************************/
+
 Info<< "Creating species object for fluidPhase Chemicals\n" << endl;
 // Object for for seBound chemicals
 
 Species_fluidPhase fluidPhase
 (
     num_fluidPhase,
-    N_Avo,
-    Ke1_on, 
-    Ke1_off,
-    Ke2_on, 
-    Ke2_off, 
-    Ks1_on, 
-    Ks1_off, 
-    Ks2_on, 
-    Ks2_off,
-    N_1,
-    N_2
+    chemConst
 );
 
 // Set ALL ptrList Sizes
 fluidPhase.setPtrListSize();
 
 // S1 (FV and FX)
+Info<< "Reading field fluidPhase_S1\n" << endl;
 fluidPhase.field.set
 (
     0,
@@ -343,6 +362,7 @@ fluidPhase.field.set
 );
 
 // S2 (Prothrombin)
+Info<< "Reading field fluidPhase_S2\n" << endl;
 fluidPhase.field.set
 (
     1,
@@ -361,6 +381,7 @@ fluidPhase.field.set
 );
 
 // E1 (FXa)
+Info<< "Reading field fluidPhase_E1\n" << endl;
 fluidPhase.field.set
 (    
     2,
@@ -379,6 +400,7 @@ fluidPhase.field.set
 );
 
 // E2 (thrombin)
+Info<< "Reading field fluidPhase_E2\n" << endl;
 fluidPhase.field.set
 (    
     3,
@@ -400,28 +422,32 @@ fluidPhase.field.set
 fluidPhase.initializeRKFields();
 
 /**************************************************************************
-    Platelet-Bound Fields
+    Platelet-Bound Object
+ - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - 
+1) Create derived Species object fluidPhase
+2) Set the ptrList sizes
+3) Read in IC/BC for the following fields:
+        pltBound.field[0] -> S1b
+        pltBound.field[1] -> S2b
+        pltBound.field[2] -> E1b
+        pltBound.field[3] -> E2b
+        pltBound.field[4] -> C1
+        pltBound.field[5] -> C2
+4) Initialize the PtrList/fields needed for RK solver
 ***************************************************************************/
 
-Info<< "Reading PtrList for pltBound\n" << endl;
-
+Info<< "Creating species object for pltBound Chemicals\n" << endl;
 Species_pltBound pltBound
 (
     num_pltBound,
-    N_Avo,
-    Kc1_on, Kc1_off, Kc1_cat,
-    Kc2_on, Kc2_off, Kc2_cat,
-    Ke1_on, Ke1_off,
-    Ke2_on, Ke2_off,
-    Ks1_on, Ks1_off,
-    Ks2_on, Ks2_off,
-    N_1, N_2
+    chemConst
 );
 
 // Set ALL ptrList Sizes
 pltBound.setPtrListSize();
 
 // S1b (FV)
+Info<< "Reading field pltBound_S1b\n" << endl;
 pltBound.field.set
 (
     0,
@@ -440,6 +466,7 @@ pltBound.field.set
 );
 
 // S2b (Prothrombin)
+Info<< "Reading/creating field pltBound_S2b\n" << endl;
 pltBound.field.set
 (
     1,
@@ -450,14 +477,15 @@ pltBound.field.set
             "pltBound_S2b",
             runTime.timeName(),
             mesh,
-            IOobject::MUST_READ,                                      
+            IOobject::READ_IF_PRESENT,                                      
             IOobject::AUTO_WRITE
         ),  
-        mesh
+        0.0*pltBound.field[0]
     )   
 );
 
 // E1b (Prothrombinase)
+Info<< "Reading/creating field pltBound_E1b\n" << endl;
 pltBound.field.set
 (    
     2,
@@ -468,14 +496,15 @@ pltBound.field.set
             "pltBound_E1b",
             runTime.timeName(),
             mesh,
-            IOobject::MUST_READ,
+            IOobject::READ_IF_PRESENT,                                      
             IOobject::AUTO_WRITE
-        ),
-        mesh
+        ),  
+        0.0*pltBound.field[0]
     )
 );
 
 // E2b (Bound Thrombin)
+Info<< "Reading/creating field pltBound_E2b\n" << endl;
 pltBound.field.set
 (    
     3,
@@ -486,14 +515,15 @@ pltBound.field.set
             "pltBound_E2b",
             runTime.timeName(),
             mesh,
-            IOobject::MUST_READ,
+            IOobject::READ_IF_PRESENT,                                      
             IOobject::AUTO_WRITE
-        ),
-        mesh
+        ),  
+        0.0*pltBound.field[0]
     )
 );
 
 // C1 (S2b:E1b)
+Info<< "Reading/creating field pltBound_C1\n" << endl;
 pltBound.field.set
 (    
     4,
@@ -504,14 +534,15 @@ pltBound.field.set
             "pltBound_C1",
             runTime.timeName(),
             mesh,
-            IOobject::MUST_READ,
+            IOobject::READ_IF_PRESENT,                                      
             IOobject::AUTO_WRITE
-        ),
-        mesh
+        ),  
+        0.0*pltBound.field[0]
     )
 );
 
 // C2 (S1b:E2b)
+Info<< "Reading/creating field pltBound_C2\n" << endl;
 pltBound.field.set
 (    
     5,
@@ -522,10 +553,10 @@ pltBound.field.set
             "pltBound_C2",
             runTime.timeName(),
             mesh,
-            IOobject::MUST_READ,
+            IOobject::READ_IF_PRESENT,                                      
             IOobject::AUTO_WRITE
-        ),
-        mesh
+        ),  
+        0.0*pltBound.field[0]
     )
 );
 

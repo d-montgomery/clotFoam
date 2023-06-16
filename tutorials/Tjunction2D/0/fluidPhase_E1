@@ -19,22 +19,22 @@ internalField   uniform 0;
 
 boundaryField
 {
-    inletLeft
-    {
-        type            zeroGradient;
-    }
-
-    inletRight
+    inletVessel
     {
         type            zeroGradient;
     }
     
-    outletLeft
+    outletVessel
     {
         type            zeroGradient;
     }
 
-    outletRight
+    outletExt
+    {
+        type            zeroGradient;
+    }
+    
+    fixedWalls
     {
         type            zeroGradient;
     }
@@ -95,23 +95,11 @@ boundaryField
             this->refGrad() = F / D;
             
         #};
-    }
     
-    fixedWalls
+    frontAndBack
     {
-        type            zeroGradient;
+        type            empty;
     }
-
-    leftChannelInnerWall
-    {
-        type            zeroGradient;
-    }
-
-    rightChannelInnerWall
-    {
-        type            zeroGradient;
-    }
-        
 }
 
 // ************************************************************************* //

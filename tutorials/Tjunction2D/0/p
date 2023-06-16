@@ -9,55 +9,50 @@ FoamFile
 {
     format      ascii;
     class       volScalarField;
-    object      pltBound_E1b;
+    object      p;
 }
 // * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * //
 
-dimensions      [0 -3 0 0 1 0 0];
+dimensions      [0 2 -2 0 0 0 0];
 
 internalField   uniform 0;
 
 boundaryField
 {
-    inletLeft
-    {
-        type            zeroGradient;
-    }
+    // Get the kinematic pressure at the outlet
+    #include "$FOAM_CASE/constant/inputParameters"
 
-    inletRight
+    inletVessel
     {
         type            zeroGradient;
     }
     
-    outletLeft
+    outletVessel
     {
-        type            zeroGradient;
+        
+        type            fixedValue;
+	    value           uniform $Pv0;
     }
 
-    outletRight
+    outletExt
     {
-        type            zeroGradient;
-    }
-
-    injuryWalls
-    {
-        type            zeroGradient;
+        type            fixedValue;
+	    value           uniform $Pm0;
     }
     
     fixedWalls
     {
         type            zeroGradient;
     }
-
-    leftChannelInnerWall
+    
+    injuryWalls
     {
         type            zeroGradient;
     }
-
-    rightChannelInnerWall
+    
+    frontAndBack
     {
-        type            zeroGradient;
+        type            empty;
     }
 }
-
 // ************************************************************************* //

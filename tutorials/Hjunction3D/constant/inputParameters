@@ -78,19 +78,19 @@ t0_Plt 0.0; // When the platelets start to enter the domain
 tf_Plt 0.01; // When the platelets reach Plt_0 at inlet
 
 // Platelet Adhesion Params
-kadh_val 3.3212e-08; // rate of adhesion [mm^3 / s]
+kAdh 3.3212e-08; // rate of adhesion [mm^3 / s]
 
 // Platelet Cohesion Params
-KcohPmax 1.0e+4; // Cohesion constant times Pmax [1/s]
+kCohPmax 1.0e+4; // Cohesion constant times Pmax [1/s]
 eta_t 0.1; // threshold value for g(eta) [nondim]
 eta_ast 0.4; // eta_ast_val + eta_t_val = 0.25 - 0.75 [nondim]
 l_D_eta #calc "2.0*$Pdiam"; // length of "diffusion" for eta [mm]
 
 // Platelet Activation Params
 kADP_Pla 0.34; // Platelet activation rate by ADP [1/s]
-ke2_Pla 0.5; // Platelet activation rate by thrombin [1/s]
+kE2_Pla 0.5; // Platelet activation rate by thrombin [1/s]
 ADP_ast 2.0e-03; // Critical concentration of ADP [nanomol / mm^3]
-e2_ast 1.0e-06; // Critical concentration of thrombin [nanomol / mm^3]
+E2_ast 1.0e-06; // Critical concentration of thrombin [nanomol / mm^3]
 
 /* ------------------------------------------------------------------------- *\
    ADP Parameters
@@ -126,29 +126,29 @@ N_1 2700.0;
 N_2 2000.0;
 
 // Kinetic Rates
-Kc0_on 8.95e+03; // On-rate for C0 [mm^3 / nanomol / s]
-Kc0_off 1.0; // Off-rate for C0 [1/s]
-Kc0_cat 1.15; // Cat-rate for C0 [1/s]
+kC0_on 8.95e+03; // On-rate for C0 [mm^3 / nanomol / s]
+kC0_off 1.0; // Off-rate for C0 [1/s]
+kC0_cat 1.15; // Cat-rate for C0 [1/s]
 
-Kc1_on 1.03e+05; // On-rate for C1 [mm^3 / nanomol / s]
-Kc1_off 1.0; // Off-rate for C1 [1/s]
-Kc1_cat 30; // Cat-rate for C1 [1/s]
+kC1_on 1.03e+05; // On-rate for C1 [mm^3 / nanomol / s]
+kC1_off 1.0; // Off-rate for C1 [1/s]
+kC1_cat 30; // Cat-rate for C1 [1/s]
 
-Kc2_on 1.73e+04; //  On-rate for C2 [mm^3 / nanomol / s]
-Kc2_off 1.0;     // Off-rate for C2 [1/s]
-Kc2_cat 0.23;    // Cat-rate for C2 [1/s]
+kC2_on 1.73e+04; //  On-rate for C2 [mm^3 / nanomol / s]
+kC2_off 1.0;     // Off-rate for C2 [1/s]
+kC2_cat 0.23;    // Cat-rate for C2 [1/s]
 
-Ke1_on 1.0e+04;  //  On-rate for Xa [mm^3 / nanomol / s]
-Ke1_off 2.5e-02; // Off-rate for Xa [1/s]
+kE1_on 1.0e+04;  //  On-rate for Xa [mm^3 / nanomol / s]
+kE1_off 2.5e-02; // Off-rate for Xa [1/s]
 
-Ke2_on 1.0e+04;  //  On-rate for IIa [mm^3 / nanomol / s]
-Ke2_off 5.9; // Off-rate for IIa [1/s]
+kE2_on 1.0e+04;  //  On-rate for IIa [mm^3 / nanomol / s]
+kE2_off 5.9; // Off-rate for IIa [1/s]
 
-Ks1_on 5.7e+04; // On-rate for FV [mm^3 / nanomol / s]
-Ks1_off 0.17; // Off-rate for FV [1/s]
+kS1_on 5.7e+04; // On-rate for FV [mm^3 / nanomol / s]
+kS1_off 0.17; // Off-rate for FV [1/s]
 
-Ks2_on 1.0e+04; // On-rate for II [mm^3 / nanomol / s]
-Ks2_off 5.9; // Off-rate for II [1/s]
+kS2_on 1.0e+04; // On-rate for II [mm^3 / nanomol / s]
+kS2_off 5.9; // Off-rate for II [1/s]
 
 /* ------------------------------------------------------------------------- *\
    Other lengths used by multiple files (DON'T EDIT!!!!!)

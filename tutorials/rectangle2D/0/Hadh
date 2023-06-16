@@ -9,17 +9,16 @@ FoamFile
 {
     format      ascii;
     class       volScalarField;
-    object      plt_Pbse;
+    object      Hadh;
 }
 // * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * //
 
-dimensions      [0 -3 0 0 0 0 0];
-
-// Get length and platelet parameters
-#include "$FOAM_CASE/constant/inputParameters"
+dimensions      [0 0 0 0 0 0 0];
 
 internalField  #codeStream
     {
+	// Get length and adhesion parameters
+	#include "$FOAM_CASE/constant/inputParameters"
 
         code
         #{
@@ -27,9 +26,6 @@ internalField  #codeStream
             const fvMesh& mesh = refCast<const fvMesh>(d.db());
             scalarField fld(mesh.nCells(), 0);
 
-            // Number of prebound platelets is x% of Pmax
-            const scalar Pb_val = 0.0 * $Pmax;
-            
             forAll(mesh.C(),cellI)
             {
             	vector CC = mesh.C()[cellI];
@@ -39,7 +35,7 @@ internalField  #codeStream
                     // Left side of channel
             	    if(CC.x() >= $l_edge_Adh && CC.x() <= $r_edge_Adh)
                     { 
-            	        fld[cellI] = Pb_val;
+            	        fld[cellI] = 1.;
                     }
                 }
 
@@ -80,7 +76,7 @@ boundaryField
     {
         type            zeroGradient;
     }
-    
+   
     injuryWalls
     {
         type            zeroGradient;

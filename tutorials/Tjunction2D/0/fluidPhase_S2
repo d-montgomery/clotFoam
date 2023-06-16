@@ -9,9 +9,11 @@ FoamFile
 {
     format      ascii;
     class       volScalarField;
-    object      pltBound_C1;
+    object      fluidPhase_S2;
 }
 // * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * //
+
+#include "$FOAM_CASE/constant/inputParameters"
 
 dimensions      [0 -3 0 0 1 0 0];
 
@@ -19,44 +21,43 @@ internalField   uniform 0;
 
 boundaryField
 {
-    inletLeft
+    inletVessel
+    {
+        type         uniformFixedValue;
+        uniformValue
+        {
+            type             scale;
+            scale            linearRamp;
+            start            $t0_chem;
+            duration         $tf_chem;
+            value            $S2_IC;
+        }
+    }
+    
+    outletVessel
     {
         type            zeroGradient;
     }
 
-    inletRight
+    outletExt
+    {
+        type            zeroGradient;
+    }
+
+    fixedWalls
     {
         type            zeroGradient;
     }
     
-    outletLeft
-    {
-        type            zeroGradient;
-    }
-
-    outletRight
-    {
-        type            zeroGradient;
-    }
-
     injuryWalls
     {
         type            zeroGradient;
     }
     
-    fixedWalls
-    {
-        type            zeroGradient;
-    }
 
-    leftChannelInnerWall
+    frontAndBack
     {
-        type            zeroGradient;
-    }
-
-    rightChannelInnerWall
-    {
-        type            zeroGradient;
+        type            empty;
     }
 }
 

@@ -9,9 +9,11 @@ FoamFile
 {
     format      ascii;
     class       volScalarField;
-    object      fluidPhase_E1;
+    object      fluidPhase_S1;
 }
 // * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * //
+
+#include "$FOAM_CASE/constant/inputParameters"
 
 dimensions      [0 -3 0 0 1 0 0];
 
@@ -19,22 +21,30 @@ internalField   uniform 0;
 
 boundaryField
 {
-    inletLeft
+    inletVessel
     {
-        type            zeroGradient;
-    }
-
-    inletRight
-    {
-        type            zeroGradient;
+        type         uniformFixedValue;
+        uniformValue
+        {
+            type             scale;
+            scale            linearRamp;
+            start            $t0_chem;
+            duration         $tf_chem;
+            value            $S1_IC;
+        }
     }
     
-    outletLeft
+    outletVessel
     {
         type            zeroGradient;
     }
 
-    outletRight
+    outletExt
+    {
+        type            zeroGradient;
+    }
+
+    fixedWalls
     {
         type            zeroGradient;
     }
@@ -46,7 +56,7 @@ boundaryField
         refGradient     uniform 0.0;
         valueFraction   uniform 0.0;
 
-        name            robinBC_E1;
+        name            robinBC_S1;
         code
         #{
             /* * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *\
@@ -60,9 +70,12 @@ boundaryField
                 this->refGrad() = 1/D * (K * field + F)
                 this->valueFraction() = 0;
 
-            For this field E1, set K = 0 and F = kC0_cat * C0 so that: 
-                this->refValue() = 0, this->refGrad() =  F / D;
+            For this field S1, set K = - kC0_on*E0 and F = kC0_off*C0 so that: 
+                this->refValue() = 0, this->refGrad() = (K*field + F) / D;
             \* * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * */ 
+
+            // Reference to this field on the face
+            scalarField& field = *this;
 
             // Lookup diffusion rate and kinetic rates 
             const scalar D = readScalar
@@ -72,46 +85,47 @@ boundaryField
                     "inputParameters"
                 ).lookup("Dc")
             );
-            
-            const scalar kC0_cat = readScalar
+
+            const scalar kC0_on = readScalar
             (
                 db().lookupObject<IOdictionary>
                 (
                     "inputParameters"
-                ).lookup("kC0_cat")
+                ).lookup("kC0_on")
+            );
+
+            const scalar kC0_off = readScalar
+            (
+                db().lookupObject<IOdictionary>
+                (
+                    "inputParameters"
+                ).lookup("kC0_off")
             );
 
             // Lookup necessary fields for reaction at boundary
+            const scalarField& E0
+            (
+                patch().lookupPatchField<volScalarField, scalar>("seBound_E0")
+            );
             const scalarField& C0
             (
                 patch().lookupPatchField<volScalarField, scalar>("seBound_C0")
             );
 
-            // Get the direction of the deltaCoeffs
-            const vectorField deltaVec = patch().delta();
+            scalarField K = -kC0_on * E0;
+            scalarField F = kC0_off * C0;
 
-            scalarField F = kC0_cat * C0;
-
-            this->refGrad() = F / D;
+            this->refGrad() = (K*field + F) / D;
             
         #};
+
     }
     
-    fixedWalls
-    {
-        type            zeroGradient;
-    }
 
-    leftChannelInnerWall
+    frontAndBack
     {
-        type            zeroGradient;
+        type            empty;
     }
-
-    rightChannelInnerWall
-    {
-        type            zeroGradient;
-    }
-        
 }
 
 // ************************************************************************* //
