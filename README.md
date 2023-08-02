@@ -138,7 +138,7 @@ The work was generously supported by grants from the National Science Foundation
 ## Citing This Work
 If you use clotFoam in your work. Please use the following to cite our work:
 
-D. Montgomery, F. Municchi, K. Leiderman, clotFoam: An Open‐Source Framework to Simulate Blood Clot Formation Under Flow, arXiv, 2023, [https://doi.org/10.48550/arXiv.2304.09180](https://doi.org/10.48550/arXiv.2304.09180).
+David Montgomery, Federico Municchi and Karin Leiderman, clotFoam: An open-source framework to simulate blood clot formation under arterial flow. SoftwareX (2023) 101483, [https://doi.org/10.1016/j.softx.2023.101483](https://doi.org/10.1016/j.softx.2023.101483).
 
 
 ## References
