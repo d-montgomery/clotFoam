@@ -15,7 +15,7 @@ clotFoam has been developed with the [OpenFoam v9 libraries](https://openfoam.or
 After installing OpenFoam v9, navigate to a working folder in a shell terminal, clone the git code repository, and build using OpenFoam v9. <em>Note: MacOS users will need to launch the OpenFoam v9 application using Docker prior to building.</em>
 
 ```
-$ git clone https://github.com/dmontgomery016/clotFoam.git clotFoam
+$ git clone https://github.com/d-montgomery/clotFoam.git clotFoam
 $ cd clotFoam/clotFoam
 $ wclean
 $ wmake
