@@ -141,16 +141,17 @@ int main(int argc, char *argv[])
         // Transport the platelets dp/dt = - div(W*J)
         #include "plateletTransport.H" // Transport the mobile platelets
 
-        // Transport the fluidPhase species
-        #include "fluidPhaseChemTransport.H"
-        
         // Solve the reaction equations
         h_rxn = runTime.deltaT()/M_rxn; // update the reaction time-step size
-        
+
         #include "plateletReactions.H"
         Plt.updateFractions();
 
-        #include "chemReactions.H"
+        if (coagReactionsOn)
+        {
+            #include "fluidPhaseChemTransport.H"
+            #include "chemReactions.H"
+        }
 
         // Transport ADP and update sigma_release
         #include "ADP.H" 

@@ -270,52 +270,61 @@ Species_seBound seBound
     chemConst
 );
 
-// Set ALL ptrList Sizes
-seBound.setPtrListSize();
+// Initialize all seBound fields if coagReactionsOn == true
+if (coagReactionsOn) 
+{
+    // Set ALL ptrList Sizes
+    seBound.setPtrListSize();
 
-// E0 (TF:VIIa)
-Info<< "Reading field seBound_E0\n" << endl;
-seBound.field.set
-(
-    0,
-    new volScalarField
-    (   
-        IOobject
-        (   
-            "seBound_E0",
-            runTime.timeName(),
-            mesh,
-            IOobject::MUST_READ,                                      
-            IOobject::AUTO_WRITE
-        ),  
-        mesh
-    )   
-);
-
-// C0 
-Info<< "Reading field seBound_C0\n" << endl;
-seBound.field.set
-(    
-    1,
-    new volScalarField
+    // E0 (TF:VIIa)
+    Info<< "Reading field seBound_E0\n" << endl;
+    seBound.field.set
     (
-        IOobject
+        0,
+        new volScalarField
+        (   
+            IOobject
+            (   
+                "seBound_E0",
+                runTime.timeName(),
+                mesh,
+                IOobject::MUST_READ,                                      
+                IOobject::AUTO_WRITE
+            ),  
+            mesh
+        )   
+    );
+
+    // C0 
+    Info<< "Reading field seBound_C0\n" << endl;
+    seBound.field.set
+    (    
+        1,
+        new volScalarField
         (
-            "seBound_C0",
-            runTime.timeName(),
-            mesh,
-            IOobject::MUST_READ,
-            IOobject::AUTO_WRITE
-        ),
-        mesh
-    )
-);
+            IOobject
+            (
+                "seBound_C0",
+                runTime.timeName(),
+                mesh,
+                IOobject::MUST_READ,
+                IOobject::AUTO_WRITE
+            ),
+            mesh
+        )
+    );
 
-// Set all necessary fields for RK method = 0 with proper dimensions
-seBound.initializeRKFields();
+    // Set all necessary fields for RK method = 0 with proper dimensions
+    seBound.initializeRKFields();
 
-// Set the initial concentration for the seBound species
-seBound.setInitialConcentration();
+    // Set the initial concentration for the seBound species
+    seBound.setInitialConcentration();
+}
+else 
+{
+    Info<< "Destroying species object for seBound Chemicals\n" << endl;
+    seBound.~Species();
+}
 
 /**************************************************************************
     Fluid-Phase Object
@@ -443,122 +452,130 @@ Species_pltBound pltBound
     chemConst
 );
 
-// Set ALL ptrList Sizes
-pltBound.setPtrListSize();
+if(coagReactionsOn)
+{
+    // Set ALL ptrList Sizes
+    pltBound.setPtrListSize();
 
-// S1b (FV)
-Info<< "Reading field pltBound_S1b\n" << endl;
-pltBound.field.set
-(
-    0,
-    new volScalarField
-    (   
-        IOobject
+    // S1b (FV)
+    Info<< "Reading field pltBound_S1b\n" << endl;
+    pltBound.field.set
+    (
+        0,
+        new volScalarField
         (   
-            "pltBound_S1b",
-            runTime.timeName(),
-            mesh,
-            IOobject::MUST_READ,                                      
-            IOobject::AUTO_WRITE
-        ),  
-        mesh
-    )   
-);
+            IOobject
+            (   
+                "pltBound_S1b",
+                runTime.timeName(),
+                mesh,
+                IOobject::MUST_READ,                                      
+                IOobject::AUTO_WRITE
+            ),  
+            mesh
+        )   
+    );
 
-// S2b (Prothrombin)
-Info<< "Reading/creating field pltBound_S2b\n" << endl;
-pltBound.field.set
-(
-    1,
-    new volScalarField
-    (   
-        IOobject
+    // S2b (Prothrombin)
+    Info<< "Reading/creating field pltBound_S2b\n" << endl;
+    pltBound.field.set
+    (
+        1,
+        new volScalarField
         (   
-            "pltBound_S2b",
-            runTime.timeName(),
-            mesh,
-            IOobject::READ_IF_PRESENT,                                      
-            IOobject::AUTO_WRITE
-        ),  
-        0.0*pltBound.field[0]
-    )   
-);
+            IOobject
+            (   
+                "pltBound_S2b",
+                runTime.timeName(),
+                mesh,
+                IOobject::READ_IF_PRESENT,                                      
+                IOobject::AUTO_WRITE
+            ),  
+            0.0*pltBound.field[0]
+        )   
+    );
 
-// E1b (Prothrombinase)
-Info<< "Reading/creating field pltBound_E1b\n" << endl;
-pltBound.field.set
-(    
-    2,
-    new volScalarField
-    (
-        IOobject
+    // E1b (Prothrombinase)
+    Info<< "Reading/creating field pltBound_E1b\n" << endl;
+    pltBound.field.set
+    (    
+        2,
+        new volScalarField
         (
-            "pltBound_E1b",
-            runTime.timeName(),
-            mesh,
-            IOobject::READ_IF_PRESENT,                                      
-            IOobject::AUTO_WRITE
-        ),  
-        0.0*pltBound.field[0]
-    )
-);
+            IOobject
+            (
+                "pltBound_E1b",
+                runTime.timeName(),
+                mesh,
+                IOobject::READ_IF_PRESENT,                                      
+                IOobject::AUTO_WRITE
+            ),  
+            0.0*pltBound.field[0]
+        )
+    );
 
-// E2b (Bound Thrombin)
-Info<< "Reading/creating field pltBound_E2b\n" << endl;
-pltBound.field.set
-(    
-    3,
-    new volScalarField
-    (
-        IOobject
+    // E2b (Bound Thrombin)
+    Info<< "Reading/creating field pltBound_E2b\n" << endl;
+    pltBound.field.set
+    (    
+        3,
+        new volScalarField
         (
-            "pltBound_E2b",
-            runTime.timeName(),
-            mesh,
-            IOobject::READ_IF_PRESENT,                                      
-            IOobject::AUTO_WRITE
-        ),  
-        0.0*pltBound.field[0]
-    )
-);
+            IOobject
+            (
+                "pltBound_E2b",
+                runTime.timeName(),
+                mesh,
+                IOobject::READ_IF_PRESENT,                                      
+                IOobject::AUTO_WRITE
+            ),  
+            0.0*pltBound.field[0]
+        )
+    );
 
-// C1 (S2b:E1b)
-Info<< "Reading/creating field pltBound_C1\n" << endl;
-pltBound.field.set
-(    
-    4,
-    new volScalarField
-    (
-        IOobject
+    // C1 (S2b:E1b)
+    Info<< "Reading/creating field pltBound_C1\n" << endl;
+    pltBound.field.set
+    (    
+        4,
+        new volScalarField
         (
-            "pltBound_C1",
-            runTime.timeName(),
-            mesh,
-            IOobject::READ_IF_PRESENT,                                      
-            IOobject::AUTO_WRITE
-        ),  
-        0.0*pltBound.field[0]
-    )
-);
+            IOobject
+            (
+                "pltBound_C1",
+                runTime.timeName(),
+                mesh,
+                IOobject::READ_IF_PRESENT,                                      
+                IOobject::AUTO_WRITE
+            ),  
+            0.0*pltBound.field[0]
+        )
+    );
 
-// C2 (S1b:E2b)
-Info<< "Reading/creating field pltBound_C2\n" << endl;
-pltBound.field.set
-(    
-    5,
-    new volScalarField
-    (
-        IOobject
+    // C2 (S1b:E2b)
+    Info<< "Reading/creating field pltBound_C2\n" << endl;
+    pltBound.field.set
+    (    
+        5,
+        new volScalarField
         (
-            "pltBound_C2",
-            runTime.timeName(),
-            mesh,
-            IOobject::READ_IF_PRESENT,                                      
-            IOobject::AUTO_WRITE
-        ),  
-        0.0*pltBound.field[0]
-    )
-);
+            IOobject
+            (
+                "pltBound_C2",
+                runTime.timeName(),
+                mesh,
+                IOobject::READ_IF_PRESENT,                                      
+                IOobject::AUTO_WRITE
+            ),  
+            0.0*pltBound.field[0]
+        )
+    );
 
-// Set all necessary fields for RK method = 0 with proper dimensions
-pltBound.initializeRKFields();
+    // Set all necessary fields for RK method = 0 with proper dimensions
+    pltBound.initializeRKFields();
+}
+else 
+{
+    Info<< "Destroying species object for pltBound Chemicals\n" << endl;
+    pltBound.~Species();
+}

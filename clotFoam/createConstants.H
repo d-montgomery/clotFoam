@@ -15,6 +15,9 @@ IOdictionary inputParameters
 // Patch identifier of the injury boundary
 label injuryPatchID = mesh.boundaryMesh().findPatchID("injuryWalls");
 
+// Flag for whether coagulation reactions occur or not 
+const bool coagReactionsOn =
+            runTime.controlDict().lookupOrDefault("coagReactionsOn", true);
 /**************************************************************************
     Fluid Scalars and Parameters
 ***************************************************************************/
