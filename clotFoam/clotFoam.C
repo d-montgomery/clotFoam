@@ -160,9 +160,12 @@ int main(int argc, char *argv[])
 
         if (runTime.write())
         {
+             // Calculate shearRate (used in shear-dependent fxns for Plt reactions)
+            shearRate = Foam::sqrt(2.0) * mag(symm( fvc::grad(U) )) ;
             Info<< "ExecutionTime = " << runTime.elapsedCpuTime() << " s"
                 << "  ClockTime = " << runTime.elapsedClockTime() << " s"
                 << nl << endl;
+            Info<< "max(shearRate) = "<< max(shearRate).value() <<" 1/s"<< nl << endl;
         }
 
         // Check if solution is diverging

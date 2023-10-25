@@ -18,6 +18,11 @@ label injuryPatchID = mesh.boundaryMesh().findPatchID("injuryWalls");
 // Flag for whether coagulation reactions occur or not 
 const bool coagReactionsOn =
             runTime.controlDict().lookupOrDefault("coagReactionsOn", true);
+
+// Flag for whether or not to smooth the adhesion region
+const bool smoothHadh =
+            runTime.controlDict().lookupOrDefault("smoothHadh",false);
+            
 /**************************************************************************
     Fluid Scalars and Parameters
 ***************************************************************************/

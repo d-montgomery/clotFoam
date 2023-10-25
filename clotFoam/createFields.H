@@ -31,6 +31,21 @@ volVectorField U
     mesh
 );
 
+// Shear rate field 
+Info<< "Reading field shearRate\n" << endl;
+volScalarField shearRate
+(
+    IOobject
+    (
+        "shearRate",
+        runTime.timeName(),
+        mesh,
+        IOobject::READ_IF_PRESENT,
+        IOobject::AUTO_WRITE
+    ),
+    Foam::sqrt(2.0) * mag(symm( fvc::grad(U) ))
+);
+
 #include "createPhi.H"
 
 label pRefCell = 0;
@@ -70,6 +85,13 @@ volScalarField Hadh
     ),
     mesh
 );
+if(smoothHadh)
+{
+    Info<< "Smoothing the Hadh field \n" << endl;
+    dimensionedScalar D_Hadh = 0.25 * pltConst.Pdiam;
+    Hadh = Hadh + fvc::laplacian(D_Hadh*D_Hadh/4., Hadh);
+    Hadh = max(0*Hadh, min(1.+0*Hadh,Hadh));    
+}
 
 /**************************************************************************
     Platelet Fraction Fields
