@@ -16,6 +16,10 @@ FoamFile
 
 application     clotFoam;
 
+coagReactionsOn true;
+
+smoothHadh      false;
+
 startFrom       startTime;
 
 startTime       0;
