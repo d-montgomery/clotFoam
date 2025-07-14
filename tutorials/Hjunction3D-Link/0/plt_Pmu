@@ -1,0 +1,181 @@
+/*--------------------------------*- C++ -*----------------------------------*\
+  =========                 |
+  \\      /  F ield         | OpenFOAM: The Open Source CFD Toolbox
+   \\    /   O peration     | Website:  https://openfoam.org
+    \\  /    A nd           | Version:  9
+     \\/     M anipulation  |
+\*---------------------------------------------------------------------------*/
+FoamFile
+{
+    format      ascii;
+    class       volScalarField;
+    object      plt_Pmu;
+}
+// * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * //
+
+dimensions      [0 -3 0 0 0 0 0];
+
+internalField   uniform 0;
+
+#include "$FOAM_CASE/constant/inputParameters"
+
+boundaryField
+{
+    inletLeft
+    {
+        type            zeroGradient;
+    }
+
+    inletRight
+    {
+        type            codedFixedValue;
+        value           uniform 0;
+        name            Pmu_nearWallProfile;
+
+        code
+        #{
+            /*
+             Near-wall excess platelet profile motivated by Eckstein 1991
+             Pmu = Plt_0 * C0 * s(x,z), 
+             where s(x,z) = 1 + K*Rx(x)^18 * (1 - Rx(x))
+                            + K*Rz(z)^18 * (1 - Rz(z))
+                   Rx(x) = abs(x - x0 - rx) / rx , 
+                      rx = radius of vessel in x-dir: w_chan/2,
+                   Rz(z) = abs(z - z0 - rz) / rz , 
+                      rz = radius of vessel in z-dir: h_chan/2,
+                   1/C0 = 1 / A * integral( s(x,z)*dA ),
+                      A = area of inlet: w_chan * h_chan
+                      K : determines amplitude of shape, K = 547.086
+             ** Code has been written for serial and parallel runs **
+            */
+
+            scalar K = 547.086; // for ampilitude of profile
+            scalar Max_S = 11.777256430668647; // maximum allowed S value
+
+            // Get position vector and initialize s field
+            const vectorField& Cf = patch().Cf(); // value a face center
+            scalarField s (patch().size(), 0.); // field for storing shape s(x,z)
+
+            // Normal concentration of platelets at inlet  
+            const scalar Plt_0 = readScalar
+            (
+                db().lookupObject<IOdictionary>
+                (
+                    "inputParameters"
+                ).lookup("Plt_0")
+            );
+
+            // Height of the vertical channel
+            const scalar h_chan = readScalar
+            (
+                db().lookupObject<IOdictionary>
+                (
+                    "inputParameters"
+                ).lookup("h_chan")
+            );
+
+            // width of the vertical channel
+            const scalar w_chan = readScalar
+            (
+                db().lookupObject<IOdictionary>
+                (
+                    "inputParameters"
+                ).lookup("w_chan")
+            );
+
+            // Left side of right vertical channel
+            const scalar x0 = readScalar
+            (
+                db().lookupObject<IOdictionary>
+                (
+                    "inputParameters"
+                ).lookup("w_chan_pls_l_inj")
+            );
+
+            // Other necessary values
+            scalar rx = w_chan/2.; // radius in x-direction
+            scalar rz = h_chan/2.; // radius in z-direction
+
+            // Get initial shape of profile
+            forAll(Cf,faceI)
+            {
+                scalar x = Cf[faceI][0];
+                scalar z = Cf[faceI][2];
+                scalar Rx = std::abs(x - x0 - rx) / rx; // shifted right by x0
+                scalar Rz = std::abs(z - rz) / rz; // shifted right by x0
+                s[faceI] = 1. + K * pow( Rx, 18) * (1 - Rx)
+                           + K * pow( Rz, 18) * (1 - Rz);
+                
+                // Exclude extrema in corners
+                if (s[faceI] > Max_S)
+                {
+                    s[faceI] = Max_S;
+                }
+            }
+
+            //--- Integrate the profile with midpoint rule
+            // Face area magnitude magSf = dx*dz 
+            const scalarField dA = patch().magSf(); 
+            scalar intgrl_s = 0.;
+            forAll(s,k)
+            {
+                intgrl_s = intgrl_s + dA[k] * s[k];
+            }
+
+            // If parallel run, must sum all local intgrl_s values
+            if (Pstream::nProcs() > 1) 
+            {
+                reduce(intgrl_s, sumOp<scalar>()); 
+            }
+
+            // Set the field values at the inlet
+            scalar C0 = h_chan * w_chan / intgrl_s;
+            operator == (Plt_0 * C0 * s); 
+
+            /*
+            // check that the integral of the profile = integral Plt_0
+            scalar intconst = Plt_0 * h_chan * w_chan;
+            scalar intgrl_profile = 0;
+            forAll(s,k)
+            {
+                intgrl_profile = intgrl_profile + dA[k] * Plt_0 * C0 * s[k];
+            }
+            Info << "intconst = " << intconst << endl;
+            Info << "intgrl_profile = " << intgrl_profile << endl;
+            */
+
+        #};
+    }
+    
+    outletLeft
+    {
+        type            zeroGradient;
+    }
+
+    outletRight
+    {
+        type            zeroGradient;
+    }
+
+    injuryWalls
+    {
+        type            zeroGradient;
+    }
+    
+    fixedWalls
+    {
+        type            zeroGradient;
+    }
+
+    leftChannelInnerWall
+    {
+        type            zeroGradient;
+    }
+
+    rightChannelInnerWall
+    {
+        type            zeroGradient;
+    }
+}
+
+// ************************************************************************* //
