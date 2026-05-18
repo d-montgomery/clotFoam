@@ -8,7 +8,7 @@ The solver is built on the icoFoam code developed by [OpenCFD Ltd.](http://openf
 * targeted drug studies
 * reactive flows with porous media
 
-The original clotFoam solver described in [Montgomery et al. 2023](https://doi.org/10.1016/j.softx.2023.101483) in this repository. Since its initial release, the solver has been extended to include shear-dependent platelet aggregation and activation, as described in [Montgomery et al. 2026](https://doi.org/10.1371/journal.pcbi.1014241). 
+The original clotFoam solver described in [Montgomery et al. 2023](https://doi.org/10.1016/j.softx.2023.101483) is hosted in this repository. Since its initial release, the solver has been extended to include shear-dependent platelet aggregation and activation, as described in [Montgomery et al. 2026](https://doi.org/10.1371/journal.pcbi.1014241). 
 
 Active development of the updated solver and all future releases now takes place through the [Leiderman Research Lab](https://github.com/LeidermanLab) at [https://github.com/LeidermanLab/clotFoam_sd](https://github.com/LeidermanLab/clotFoam_sd)
 
