@@ -8,6 +8,10 @@ The solver is built on the icoFoam code developed by [OpenCFD Ltd.](http://openf
 * targeted drug studies
 * reactive flows with porous media
 
+The original clotFoam solver described in [Montgomery et al. 2023](https://doi.org/10.1016/j.softx.2023.101483) in this repository. Since its initial release, the solver has been extended to include shear-dependent platelet aggregation and activation, as described in [Montgomery et al. 2026](https://doi.org/10.1371/journal.pcbi.1014241). 
+
+Active development of the updated solver and all future releases now takes place through the [Leiderman Research Lab](https://github.com/LeidermanLab) at [https://github.com/LeidermanLab/clotFoam_sd](https://github.com/LeidermanLab/clotFoam_sd)
+
 ## Installation
 
 clotFoam has been developed with the [OpenFoam v9 libraries](https://openfoam.org/version/9/). The code has been tested using the MacOS, Linux, and Ubuntu installations, but should work on any operating system capable of installing OpenFoam. To install the clotFoam solver, first follow the instructions on this page: [OpenFoam v9 Unbuntu Install](https://openfoam.org/download/9-ubuntu/) to install the OpenFoam 9 libraries.  Alternatively, OpenFoam v9 can be downloaded for use with any operating system at the [OpenFoam Download Archive](https://openfoam.org/download/archive/).
