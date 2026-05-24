@@ -32,7 +32,7 @@ dimensionedScalar nu
 (
     "nu",
     dimViscosity,
-    inputParameters.lookup("nu")
+    inputParameters.get<scalar>("nu")
 );
 
 // Carman-Kozeny Consant
@@ -40,7 +40,7 @@ dimensionedScalar C_CK
 (
     "C_CK",
     dimless/dimArea,
-    inputParameters.lookup("C_CK")
+    inputParameters.get<scalar>("C_CK")
 );
 
 /**************************************************************************
@@ -64,7 +64,7 @@ dimensionedScalar D_ADP
 (
     "D_ADP",
     dimViscosity,
-    inputParameters.lookup("D_ADP")
+    inputParameters.get<scalar>("D_ADP")
 );
 
 // Total ADP Released (\hat A)
@@ -72,7 +72,7 @@ dimensionedScalar ADP_rel
 (
     "ADP_rel",
     dimMoles,
-    inputParameters.lookup("ADP_rel")
+    inputParameters.get<scalar>("ADP_rel")
 );
 
 // How often the sigma_release function is calculated
@@ -127,7 +127,7 @@ dimensionedScalar Dc
 (
     "Dc",
     dimViscosity,
-    inputParameters.lookup("Dc")
+    inputParameters.get<scalar>("Dc")
 );
 
 

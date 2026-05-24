@@ -1,0 +1,93 @@
+Building Docker image...
+docker build -t clotfoam:openfoam12 -f docker/Dockerfile .
+#0 building with "desktop-linux" instance using docker driver
+
+#1 [internal] load build definition from Dockerfile
+#1 transferring dockerfile: 1.33kB done
+#1 DONE 0.0s
+
+#2 [internal] load metadata for docker.io/opencfd/openfoam-dev:2412
+#2 DONE 1.2s
+
+#3 [internal] load .dockerignore
+#3 transferring context: 2B done
+#3 DONE 0.0s
+
+#4 [ 1/10] FROM docker.io/opencfd/openfoam-dev:2412@sha256:2b206bc51fd428996d0ebbe67d751cc8f7e8d86aa431a62e6b409a40a5f38483
+#4 DONE 0.0s
+
+#5 [internal] load build context
+#5 transferring context: 5.12kB done
+#5 DONE 0.0s
+
+#6 [ 9/10] RUN chmod +x /home/ofuser/docker/run-test.sh /home/ofuser/docker/test.sh
+#6 CACHED
+
+#7 [ 7/10] COPY --chown=ofuser:ofuser docker/run-test.sh /home/ofuser/docker/run-test.sh
+#7 CACHED
+
+#8 [ 8/10] COPY --chown=ofuser:ofuser docker/test.sh /home/ofuser/docker/test.sh
+#8 CACHED
+
+#9 [ 2/10] RUN apt-get update && apt-get install -y     build-essential     sudo     && rm -rf /var/lib/apt/lists/*
+#9 CACHED
+
+#10 [ 3/10] RUN useradd -m -s /bin/bash -G sudo ofuser &&     echo "ofuser ALL=(ALL) NOPASSWD: ALL" >> /etc/sudoers
+#10 CACHED
+
+#11 [ 5/10] COPY --chown=ofuser:ofuser clotFoam /home/ofuser/clotFoam
+#11 CACHED
+
+#12 [ 6/10] COPY --chown=ofuser:ofuser tutorials /home/ofuser/tutorials
+#12 CACHED
+
+#13 [ 4/10] WORKDIR /home/ofuser
+#13 CACHED
+
+#14 [10/10] RUN mkdir -p /home/ofuser/OpenFOAM/ofuser-v2412/platforms/linuxARM64GccDPInt32Opt/bin &&     mkdir -p /home/ofuser/OpenFOAM/ofuser-v2412/platforms/linuxARM64GccDPInt32Opt/lib
+#14 CACHED
+
+#15 exporting to image
+#15 exporting layers done
+#15 writing image sha256:b4220bb76583fbb0772cae256d816d29b235bddfa35c76605742c752b978289b done
+#15 naming to docker.io/library/clotfoam:openfoam12 done
+#15 DONE 0.0s
+
+View build details: docker-desktop://dashboard/build/desktop-linux/desktop-linux/qiok3667im9w0x0b4amvu87x1
+Running tests in Docker...
+docker run --rm \
+		clotfoam:openfoam12 \
+		/bin/bash /home/ofuser/docker/run-test.sh
+================================================
+OpenFOAM Environment Check
+================================================
+WM_PROJECT_VERSION: v2412
+FOAM_USER_APPBIN: /home/ofuser/OpenFOAM/ofuser-v2412/platforms/linuxARM64GccDPInt32Opt/bin
+================================================
+
+================================================
+Compiling clotFoam solver...
+================================================
+Making dependencies: clotFoam.C
+g++ -std=c++17 -pthread -DOPENFOAM=2412 -DWM_DP -DWM_LABEL_SIZE=32 -Wall -Wextra -Wold-style-cast -Wnon-virtual-dtor -Wno-unused-parameter -Wno-invalid-offsetof -Wno-attributes -Wno-unknown-pragmas -O3 -floop-optimize -falign-loops -falign-labels -falign-functions -falign-jumps  -DNoRepository -ftemplate-depth-100  -I/usr/lib/openfoam/openfoam2412/src/finiteVolume/lnInclude -I/usr/lib/openfoam/openfoam2412/src/meshTools/lnInclude -iquote. -IlnInclude -I/usr/lib/openfoam/openfoam2412/src/OpenFOAM/lnInclude -I/usr/lib/openfoam/openfoam2412/src/OSspecific/POSIX/lnInclude   -fPIC -c clotFoam.C -o Make/linuxARM64GccDPInt32Opt/clotFoam.o
+g++ -std=c++17 -pthread -DOPENFOAM=2412 -DWM_DP -DWM_LABEL_SIZE=32 -Wall -Wextra -Wold-style-cast -Wnon-virtual-dtor -Wno-unused-parameter -Wno-invalid-offsetof -Wno-attributes -Wno-unknown-pragmas -O3 -floop-optimize -falign-loops -falign-labels -falign-functions -falign-jumps  -DNoRepository -ftemplate-depth-100  -I/usr/lib/openfoam/openfoam2412/src/finiteVolume/lnInclude -I/usr/lib/openfoam/openfoam2412/src/meshTools/lnInclude -iquote. -IlnInclude -I/usr/lib/openfoam/openfoam2412/src/OpenFOAM/lnInclude -I/usr/lib/openfoam/openfoam2412/src/OSspecific/POSIX/lnInclude   -fPIC -Xlinker --add-needed -Xlinker --no-as-needed  Make/linuxARM64GccDPInt32Opt/clotFoam.o -L/usr/lib/openfoam/openfoam2412/platforms/linuxARM64GccDPInt32Opt/lib \
+    -lfiniteVolume -lmeshTools -lOpenFOAM -ldl  \
+     -lm -o /home/ofuser/OpenFOAM/ofuser-v2412/platforms/linuxARM64GccDPInt32Opt/bin/clotFoam
+
+================================================
+Compilation successful!
+================================================
+
+================================================
+Running rectangle2D tutorial...
+================================================
+Running blockMesh...
+Running clotFoam (10 timesteps for testing)...
+
+clotFoam finished with exit code: 0
+✓ Completed 6 time steps
+✓ Found output directory: 0.001
+
+================================================
+All tests passed successfully!
+================================================

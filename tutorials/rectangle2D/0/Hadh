@@ -42,7 +42,7 @@ internalField  #codeStream
             }
 
             
-            writeEntry(os, "", fld);
+            fld.writeEntry("", os);
         #};
 
         //- Optional:

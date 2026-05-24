@@ -1,0 +1,243 @@
+================================================
+OpenFOAM Environment Check
+================================================
+WM_PROJECT_VERSION: v2412
+FOAM_USER_APPBIN: /root/OpenFOAM/user-v2412/platforms/linuxARM64GccDPInt32Opt/bin
+================================================
+
+================================================
+Compiling clotFoam solver...
+================================================
+Making dependencies: clotFoam.C
+wmkdepend: parse error while scanning 'plateletConstants.H' ... perhaps missing a final newline
+wmkdepend: parse error while scanning 'chemConstants.H' ... perhaps missing a final newline
+wmkdepend: parse error while scanning 'Species_seBound.H' ... perhaps missing a final newline
+wmkdepend: parse error while scanning 'Species_fluidPhase.H' ... perhaps missing a final newline
+wmkdepend: parse error while scanning 'Species_pltBound.H' ... perhaps missing a final newline
+wmkdepend: parse error while scanning 'odeSolver.H' ... perhaps missing a final newline
+wmkdepend: parse error while scanning 'createFields.H' ... perhaps missing a final newline
+wmkdepend: parse error while scanning 'setSpeciesPointers.H' ... perhaps missing a final newline
+wmkdepend: parse error while scanning 'solveFluids.H' ... perhaps missing a final newline
+wmkdepend: parse error while scanning 'chemReactions.H' ... perhaps missing a final newline
+wmkdepend: parse error while scanning 'isSolutionDiverging.H' ... perhaps missing a final newline
+g++ -std=c++17 -pthread -DOPENFOAM=2412 -DWM_DP -DWM_LABEL_SIZE=32 -Wall -Wextra -Wold-style-cast -Wnon-virtual-dtor -Wno-unused-parameter -Wno-invalid-offsetof -Wno-attributes -Wno-unknown-pragmas -O3 -floop-optimize -falign-loops -falign-labels -falign-functions -falign-jumps  -DNoRepository -ftemplate-depth-100  -I/usr/lib/openfoam/openfoam2412/src/finiteVolume/lnInclude -I/usr/lib/openfoam/openfoam2412/src/meshTools/lnInclude -iquote. -IlnInclude -I/usr/lib/openfoam/openfoam2412/src/OpenFOAM/lnInclude -I/usr/lib/openfoam/openfoam2412/src/OSspecific/POSIX/lnInclude   -fPIC -c clotFoam.C -o Make/linuxARM64GccDPInt32Opt/clotFoam.o
+In file included from clotFoam.C:74:
+plateletConstants.H:22:5: warning: 'Foam::dimensioned<Type>::dimensioned(const Foam::word&, const Foam::dimensionSet&, Foam::Istream&) [with Type = double]' is deprecated: Since 2018-11; use "construct from dictionary or entry" [-Wdeprecated-declarations]
+   22 |     };
+      |     ^
+In file included from /usr/lib/openfoam/openfoam2412/src/OpenFOAM/lnInclude/dimensionedType.H:577,
+                 from /usr/lib/openfoam/openfoam2412/src/OpenFOAM/lnInclude/dimensionedScalar.H:41,
+                 from /usr/lib/openfoam/openfoam2412/src/OpenFOAM/lnInclude/TimeState.H:41,
+                 from /usr/lib/openfoam/openfoam2412/src/OpenFOAM/lnInclude/Time.H:50,
+                 from /usr/lib/openfoam/openfoam2412/src/finiteVolume/lnInclude/fvCFD.H:4,
+                 from clotFoam.C:69:
+/usr/lib/openfoam/openfoam2412/src/OpenFOAM/lnInclude/dimensionedType.C:332:1: note: declared here
+  332 | Foam::dimensioned<Type>::dimensioned
+      | ^~~~
+plateletConstants.H:30:5: warning: 'Foam::dimensioned<Type>::dimensioned(const Foam::word&, const Foam::dimensionSet&, Foam::Istream&) [with Type = double]' is deprecated: Since 2018-11; use "construct from dictionary or entry" [-Wdeprecated-declarations]
+   30 |     };
+      |     ^
+/usr/lib/openfoam/openfoam2412/src/OpenFOAM/lnInclude/dimensionedType.C:332:1: note: declared here
+  332 | Foam::dimensioned<Type>::dimensioned
+      | ^~~~
+plateletConstants.H:38:5: warning: 'Foam::dimensioned<Type>::dimensioned(const Foam::word&, const Foam::dimensionSet&, Foam::Istream&) [with Type = double]' is deprecated: Since 2018-11; use "construct from dictionary or entry" [-Wdeprecated-declarations]
+   38 |     };
+      |     ^
+/usr/lib/openfoam/openfoam2412/src/OpenFOAM/lnInclude/dimensionedType.C:332:1: note: declared here
+  332 | Foam::dimensioned<Type>::dimensioned
+      | ^~~~
+plateletConstants.H:46:5: warning: 'Foam::dimensioned<Type>::dimensioned(const Foam::word&, const Foam::dimensionSet&, Foam::Istream&) [with Type = double]' is deprecated: Since 2018-11; use "construct from dictionary or entry" [-Wdeprecated-declarations]
+   46 |     };
+      |     ^
+/usr/lib/openfoam/openfoam2412/src/OpenFOAM/lnInclude/dimensionedType.C:332:1: note: declared here
+  332 | Foam::dimensioned<Type>::dimensioned
+      | ^~~~
+plateletConstants.H:54:5: warning: 'Foam::dimensioned<Type>::dimensioned(const Foam::word&, const Foam::dimensionSet&, Foam::Istream&) [with Type = double]' is deprecated: Since 2018-11; use "construct from dictionary or entry" [-Wdeprecated-declarations]
+   54 |     };
+      |     ^
+/usr/lib/openfoam/openfoam2412/src/OpenFOAM/lnInclude/dimensionedType.C:332:1: note: declared here
+  332 | Foam::dimensioned<Type>::dimensioned
+      | ^~~~
+plateletConstants.H:62:5: warning: 'Foam::dimensioned<Type>::dimensioned(const Foam::word&, const Foam::dimensionSet&, Foam::Istream&) [with Type = double]' is deprecated: Since 2018-11; use "construct from dictionary or entry" [-Wdeprecated-declarations]
+   62 |     };
+      |     ^
+/usr/lib/openfoam/openfoam2412/src/OpenFOAM/lnInclude/dimensionedType.C:332:1: note: declared here
+  332 | Foam::dimensioned<Type>::dimensioned
+      | ^~~~
+plateletConstants.H:70:5: warning: 'Foam::dimensioned<Type>::dimensioned(const Foam::word&, const Foam::dimensionSet&, Foam::Istream&) [with Type = double]' is deprecated: Since 2018-11; use "construct from dictionary or entry" [-Wdeprecated-declarations]
+   70 |     };
+      |     ^
+/usr/lib/openfoam/openfoam2412/src/OpenFOAM/lnInclude/dimensionedType.C:332:1: note: declared here
+  332 | Foam::dimensioned<Type>::dimensioned
+      | ^~~~
+plateletConstants.H:78:5: warning: 'Foam::dimensioned<Type>::dimensioned(const Foam::word&, const Foam::dimensionSet&, Foam::Istream&) [with Type = double]' is deprecated: Since 2018-11; use "construct from dictionary or entry" [-Wdeprecated-declarations]
+   78 |     };
+      |     ^
+/usr/lib/openfoam/openfoam2412/src/OpenFOAM/lnInclude/dimensionedType.C:332:1: note: declared here
+  332 | Foam::dimensioned<Type>::dimensioned
+      | ^~~~
+plateletConstants.H:86:5: warning: 'Foam::dimensioned<Type>::dimensioned(const Foam::word&, const Foam::dimensionSet&, Foam::Istream&) [with Type = double]' is deprecated: Since 2018-11; use "construct from dictionary or entry" [-Wdeprecated-declarations]
+   86 |     };
+      |     ^
+/usr/lib/openfoam/openfoam2412/src/OpenFOAM/lnInclude/dimensionedType.C:332:1: note: declared here
+  332 | Foam::dimensioned<Type>::dimensioned
+      | ^~~~
+plateletConstants.H:106:5: warning: 'Foam::dimensioned<Type>::dimensioned(const Foam::word&, const Foam::dimensionSet&, Foam::Istream&) [with Type = double]' is deprecated: Since 2018-11; use "construct from dictionary or entry" [-Wdeprecated-declarations]
+  106 |     };
+      |     ^
+/usr/lib/openfoam/openfoam2412/src/OpenFOAM/lnInclude/dimensionedType.C:332:1: note: declared here
+  332 | Foam::dimensioned<Type>::dimensioned
+      | ^~~~
+In file included from clotFoam.C:75:
+chemConstants.H:12:5: warning: 'Foam::dimensioned<Type>::dimensioned(const Foam::word&, const Foam::dimensionSet&, Foam::Istream&) [with Type = double]' is deprecated: Since 2018-11; use "construct from dictionary or entry" [-Wdeprecated-declarations]
+   12 |     };
+      |     ^
+/usr/lib/openfoam/openfoam2412/src/OpenFOAM/lnInclude/dimensionedType.C:332:1: note: declared here
+  332 | Foam::dimensioned<Type>::dimensioned
+      | ^~~~
+chemConstants.H:30:5: warning: 'Foam::dimensioned<Type>::dimensioned(const Foam::word&, const Foam::dimensionSet&, Foam::Istream&) [with Type = double]' is deprecated: Since 2018-11; use "construct from dictionary or entry" [-Wdeprecated-declarations]
+   30 |     };
+      |     ^
+/usr/lib/openfoam/openfoam2412/src/OpenFOAM/lnInclude/dimensionedType.C:332:1: note: declared here
+  332 | Foam::dimensioned<Type>::dimensioned
+      | ^~~~
+chemConstants.H:36:5: warning: 'Foam::dimensioned<Type>::dimensioned(const Foam::word&, const Foam::dimensionSet&, Foam::Istream&) [with Type = double]' is deprecated: Since 2018-11; use "construct from dictionary or entry" [-Wdeprecated-declarations]
+   36 |     };
+      |     ^
+/usr/lib/openfoam/openfoam2412/src/OpenFOAM/lnInclude/dimensionedType.C:332:1: note: declared here
+  332 | Foam::dimensioned<Type>::dimensioned
+      | ^~~~
+chemConstants.H:43:5: warning: 'Foam::dimensioned<Type>::dimensioned(const Foam::word&, const Foam::dimensionSet&, Foam::Istream&) [with Type = double]' is deprecated: Since 2018-11; use "construct from dictionary or entry" [-Wdeprecated-declarations]
+   43 |     };
+      |     ^
+/usr/lib/openfoam/openfoam2412/src/OpenFOAM/lnInclude/dimensionedType.C:332:1: note: declared here
+  332 | Foam::dimensioned<Type>::dimensioned
+      | ^~~~
+chemConstants.H:51:5: warning: 'Foam::dimensioned<Type>::dimensioned(const Foam::word&, const Foam::dimensionSet&, Foam::Istream&) [with Type = double]' is deprecated: Since 2018-11; use "construct from dictionary or entry" [-Wdeprecated-declarations]
+   51 |     };
+      |     ^
+/usr/lib/openfoam/openfoam2412/src/OpenFOAM/lnInclude/dimensionedType.C:332:1: note: declared here
+  332 | Foam::dimensioned<Type>::dimensioned
+      | ^~~~
+chemConstants.H:57:5: warning: 'Foam::dimensioned<Type>::dimensioned(const Foam::word&, const Foam::dimensionSet&, Foam::Istream&) [with Type = double]' is deprecated: Since 2018-11; use "construct from dictionary or entry" [-Wdeprecated-declarations]
+   57 |     };
+      |     ^
+/usr/lib/openfoam/openfoam2412/src/OpenFOAM/lnInclude/dimensionedType.C:332:1: note: declared here
+  332 | Foam::dimensioned<Type>::dimensioned
+      | ^~~~
+chemConstants.H:64:5: warning: 'Foam::dimensioned<Type>::dimensioned(const Foam::word&, const Foam::dimensionSet&, Foam::Istream&) [with Type = double]' is deprecated: Since 2018-11; use "construct from dictionary or entry" [-Wdeprecated-declarations]
+   64 |     };
+      |     ^
+/usr/lib/openfoam/openfoam2412/src/OpenFOAM/lnInclude/dimensionedType.C:332:1: note: declared here
+  332 | Foam::dimensioned<Type>::dimensioned
+      | ^~~~
+chemConstants.H:72:5: warning: 'Foam::dimensioned<Type>::dimensioned(const Foam::word&, const Foam::dimensionSet&, Foam::Istream&) [with Type = double]' is deprecated: Since 2018-11; use "construct from dictionary or entry" [-Wdeprecated-declarations]
+   72 |     };
+      |     ^
+/usr/lib/openfoam/openfoam2412/src/OpenFOAM/lnInclude/dimensionedType.C:332:1: note: declared here
+  332 | Foam::dimensioned<Type>::dimensioned
+      | ^~~~
+chemConstants.H:78:5: warning: 'Foam::dimensioned<Type>::dimensioned(const Foam::word&, const Foam::dimensionSet&, Foam::Istream&) [with Type = double]' is deprecated: Since 2018-11; use "construct from dictionary or entry" [-Wdeprecated-declarations]
+   78 |     };
+      |     ^
+/usr/lib/openfoam/openfoam2412/src/OpenFOAM/lnInclude/dimensionedType.C:332:1: note: declared here
+  332 | Foam::dimensioned<Type>::dimensioned
+      | ^~~~
+chemConstants.H:85:5: warning: 'Foam::dimensioned<Type>::dimensioned(const Foam::word&, const Foam::dimensionSet&, Foam::Istream&) [with Type = double]' is deprecated: Since 2018-11; use "construct from dictionary or entry" [-Wdeprecated-declarations]
+   85 |     };
+      |     ^
+/usr/lib/openfoam/openfoam2412/src/OpenFOAM/lnInclude/dimensionedType.C:332:1: note: declared here
+  332 | Foam::dimensioned<Type>::dimensioned
+      | ^~~~
+chemConstants.H:93:5: warning: 'Foam::dimensioned<Type>::dimensioned(const Foam::word&, const Foam::dimensionSet&, Foam::Istream&) [with Type = double]' is deprecated: Since 2018-11; use "construct from dictionary or entry" [-Wdeprecated-declarations]
+   93 |     };
+      |     ^
+/usr/lib/openfoam/openfoam2412/src/OpenFOAM/lnInclude/dimensionedType.C:332:1: note: declared here
+  332 | Foam::dimensioned<Type>::dimensioned
+      | ^~~~
+chemConstants.H:99:5: warning: 'Foam::dimensioned<Type>::dimensioned(const Foam::word&, const Foam::dimensionSet&, Foam::Istream&) [with Type = double]' is deprecated: Since 2018-11; use "construct from dictionary or entry" [-Wdeprecated-declarations]
+   99 |     };
+      |     ^
+/usr/lib/openfoam/openfoam2412/src/OpenFOAM/lnInclude/dimensionedType.C:332:1: note: declared here
+  332 | Foam::dimensioned<Type>::dimensioned
+      | ^~~~
+chemConstants.H:107:5: warning: 'Foam::dimensioned<Type>::dimensioned(const Foam::word&, const Foam::dimensionSet&, Foam::Istream&) [with Type = double]' is deprecated: Since 2018-11; use "construct from dictionary or entry" [-Wdeprecated-declarations]
+  107 |     };
+      |     ^
+/usr/lib/openfoam/openfoam2412/src/OpenFOAM/lnInclude/dimensionedType.C:332:1: note: declared here
+  332 | Foam::dimensioned<Type>::dimensioned
+      | ^~~~
+chemConstants.H:113:5: warning: 'Foam::dimensioned<Type>::dimensioned(const Foam::word&, const Foam::dimensionSet&, Foam::Istream&) [with Type = double]' is deprecated: Since 2018-11; use "construct from dictionary or entry" [-Wdeprecated-declarations]
+  113 |     };
+      |     ^
+/usr/lib/openfoam/openfoam2412/src/OpenFOAM/lnInclude/dimensionedType.C:332:1: note: declared here
+  332 | Foam::dimensioned<Type>::dimensioned
+      | ^~~~
+chemConstants.H:121:5: warning: 'Foam::dimensioned<Type>::dimensioned(const Foam::word&, const Foam::dimensionSet&, Foam::Istream&) [with Type = double]' is deprecated: Since 2018-11; use "construct from dictionary or entry" [-Wdeprecated-declarations]
+  121 |     };
+      |     ^
+/usr/lib/openfoam/openfoam2412/src/OpenFOAM/lnInclude/dimensionedType.C:332:1: note: declared here
+  332 | Foam::dimensioned<Type>::dimensioned
+      | ^~~~
+chemConstants.H:127:5: warning: 'Foam::dimensioned<Type>::dimensioned(const Foam::word&, const Foam::dimensionSet&, Foam::Istream&) [with Type = double]' is deprecated: Since 2018-11; use "construct from dictionary or entry" [-Wdeprecated-declarations]
+  127 |     };
+      |     ^
+/usr/lib/openfoam/openfoam2412/src/OpenFOAM/lnInclude/dimensionedType.C:332:1: note: declared here
+  332 | Foam::dimensioned<Type>::dimensioned
+      | ^~~~
+chemConstants.H:135:5: warning: 'Foam::dimensioned<Type>::dimensioned(const Foam::word&, const Foam::dimensionSet&, Foam::Istream&) [with Type = double]' is deprecated: Since 2018-11; use "construct from dictionary or entry" [-Wdeprecated-declarations]
+  135 |     };
+      |     ^
+/usr/lib/openfoam/openfoam2412/src/OpenFOAM/lnInclude/dimensionedType.C:332:1: note: declared here
+  332 | Foam::dimensioned<Type>::dimensioned
+      | ^~~~
+chemConstants.H:142:5: warning: 'Foam::dimensioned<Type>::dimensioned(const Foam::word&, const Foam::dimensionSet&, Foam::Istream&) [with Type = double]' is deprecated: Since 2018-11; use "construct from dictionary or entry" [-Wdeprecated-declarations]
+  142 |     };
+      |     ^
+/usr/lib/openfoam/openfoam2412/src/OpenFOAM/lnInclude/dimensionedType.C:332:1: note: declared here
+  332 | Foam::dimensioned<Type>::dimensioned
+      | ^~~~
+In file included from clotFoam.C:103:
+createConstants.H: In function 'int main(int, char**)':
+createConstants.H:36:1: warning: 'Foam::dimensioned<Type>::dimensioned(const Foam::word&, const Foam::dimensionSet&, Foam::Istream&) [with Type = double]' is deprecated: Since 2018-11; use "construct from dictionary or entry" [-Wdeprecated-declarations]
+   36 | );
+      | ^
+/usr/lib/openfoam/openfoam2412/src/OpenFOAM/lnInclude/dimensionedType.C:332:1: note: declared here
+  332 | Foam::dimensioned<Type>::dimensioned
+      | ^~~~
+createConstants.H:44:1: warning: 'Foam::dimensioned<Type>::dimensioned(const Foam::word&, const Foam::dimensionSet&, Foam::Istream&) [with Type = double]' is deprecated: Since 2018-11; use "construct from dictionary or entry" [-Wdeprecated-declarations]
+   44 | );
+      | ^
+/usr/lib/openfoam/openfoam2412/src/OpenFOAM/lnInclude/dimensionedType.C:332:1: note: declared here
+  332 | Foam::dimensioned<Type>::dimensioned
+      | ^~~~
+createConstants.H:68:1: warning: 'Foam::dimensioned<Type>::dimensioned(const Foam::word&, const Foam::dimensionSet&, Foam::Istream&) [with Type = double]' is deprecated: Since 2018-11; use "construct from dictionary or entry" [-Wdeprecated-declarations]
+   68 | );
+      | ^
+/usr/lib/openfoam/openfoam2412/src/OpenFOAM/lnInclude/dimensionedType.C:332:1: note: declared here
+  332 | Foam::dimensioned<Type>::dimensioned
+      | ^~~~
+createConstants.H:76:1: warning: 'Foam::dimensioned<Type>::dimensioned(const Foam::word&, const Foam::dimensionSet&, Foam::Istream&) [with Type = double]' is deprecated: Since 2018-11; use "construct from dictionary or entry" [-Wdeprecated-declarations]
+   76 | );
+      | ^
+/usr/lib/openfoam/openfoam2412/src/OpenFOAM/lnInclude/dimensionedType.C:332:1: note: declared here
+  332 | Foam::dimensioned<Type>::dimensioned
+      | ^~~~
+createConstants.H:131:1: warning: 'Foam::dimensioned<Type>::dimensioned(const Foam::word&, const Foam::dimensionSet&, Foam::Istream&) [with Type = double]' is deprecated: Since 2018-11; use "construct from dictionary or entry" [-Wdeprecated-declarations]
+  131 | );
+      | ^
+/usr/lib/openfoam/openfoam2412/src/OpenFOAM/lnInclude/dimensionedType.C:332:1: note: declared here
+  332 | Foam::dimensioned<Type>::dimensioned
+      | ^~~~
+g++ -std=c++17 -pthread -DOPENFOAM=2412 -DWM_DP -DWM_LABEL_SIZE=32 -Wall -Wextra -Wold-style-cast -Wnon-virtual-dtor -Wno-unused-parameter -Wno-invalid-offsetof -Wno-attributes -Wno-unknown-pragmas -O3 -floop-optimize -falign-loops -falign-labels -falign-functions -falign-jumps  -DNoRepository -ftemplate-depth-100  -I/usr/lib/openfoam/openfoam2412/src/finiteVolume/lnInclude -I/usr/lib/openfoam/openfoam2412/src/meshTools/lnInclude -iquote. -IlnInclude -I/usr/lib/openfoam/openfoam2412/src/OpenFOAM/lnInclude -I/usr/lib/openfoam/openfoam2412/src/OSspecific/POSIX/lnInclude   -fPIC -Xlinker --add-needed -Xlinker --no-as-needed  Make/linuxARM64GccDPInt32Opt/clotFoam.o -L/usr/lib/openfoam/openfoam2412/platforms/linuxARM64GccDPInt32Opt/lib \
+    -lfiniteVolume -lmeshTools -lOpenFOAM -ldl  \
+     -lm -o /root/OpenFOAM/user-v2412/platforms/linuxARM64GccDPInt32Opt/bin/clotFoam
+
+================================================
+Compilation successful!
+================================================
+
+================================================
+Running rectangle2D tutorial...
+================================================
+Running blockMesh...

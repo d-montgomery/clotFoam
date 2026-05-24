@@ -14,16 +14,34 @@ Active development of the updated solver and all future releases now takes place
 
 ## Installation
 
-clotFoam has been developed with the [OpenFoam v9 libraries](https://openfoam.org/version/9/). The code has been tested using the MacOS, Linux, and Ubuntu installations, but should work on any operating system capable of installing OpenFoam. To install the clotFoam solver, first follow the instructions on this page: [OpenFoam v9 Unbuntu Install](https://openfoam.org/download/9-ubuntu/) to install the OpenFoam 9 libraries.  Alternatively, OpenFoam v9 can be downloaded for use with any operating system at the [OpenFoam Download Archive](https://openfoam.org/download/archive/).
+clotFoam has been migrated to [OpenFOAM v12 (2412)](https://www.openfoam.com/news/main-news/openfoam-v2412). The code has been tested using MacOS, Linux, and Ubuntu installations, but should work on any operating system capable of installing OpenFOAM.
 
-After installing OpenFoam v9, navigate to a working folder in a shell terminal, clone the git code repository, and build using OpenFoam v9. <em>Note: MacOS users will need to launch the OpenFoam v9 application using Docker prior to building.</em>
+### Option 1: Docker (Recommended)
 
+The easiest way to test and run clotFoam is using Docker:
+
+```bash
+$ git clone https://github.com/d-montgomery/clotFoam.git clotFoam
+$ cd clotFoam
+$ make docker-test
 ```
+
+This will build the solver and run automated tests in OpenFOAM 12. See [TESTING.md](TESTING.md) for more details.
+
+### Option 2: Local Installation
+
+To install OpenFOAM 12 locally, follow the instructions at [OpenFOAM Downloads](https://www.openfoam.com/download). After installing OpenFOAM 12:
+
+```bash
 $ git clone https://github.com/d-montgomery/clotFoam.git clotFoam
 $ cd clotFoam/clotFoam
 $ wclean
 $ wmake
 ```
+
+### Migration from OpenFOAM 9
+
+If you're upgrading from OpenFOAM 9, see [MIGRATION_V9_V12.md](MIGRATION_V9_V12.md) for details on API changes and breaking changes.
 
 ## Tutorial cases
 The clotFoam download comes with two tutorials for simulating platelet mediated coagulation.  The rectangle2D case simulates thrombosis in a 2D \[240,60] micron rectangle with an injury length of 90 microns, centered in the middle of the bottom wall of the vessel.  The Hjunction3D case simulates hemostasis in an H-shaped micro fluidic device as described in Schoeman et al.  In both cases, the parameters for the simulation can be edited in the $FOAM_CASE/constan/inputParameters file, and in the $FOAM_CASE/system/controlDict file. To run either of these simulations, navigate back to the main clotFoam directory, then to the desired tutorial directory.  For example tutorials/rectangle2D:

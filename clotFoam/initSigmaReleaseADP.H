@@ -29,7 +29,7 @@ if
 (
     remainder
     (
-        runTime.controlDict().lookup<scalar>("startTime"),
+        runTime.controlDict().get<scalar>("startTime"),
         sigma_dt
     ) > 1e-12
 )
@@ -62,7 +62,7 @@ IOList<scalar> tau
 // Also initializes tau if startTime > 0 and no tau present at startTime
 forAll(ddt_Pbnew,i)
 {
-    scalar t0 = runTime.controlDict().lookup<scalar>("startTime");
+    scalar t0 = runTime.controlDict().get<scalar>("startTime");
     
     if(t0 < 1e-12) // If startTime = 0, initialize as zeros
     {

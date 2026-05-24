@@ -39,9 +39,9 @@ class Species
 
             forAll(field,j)
             {
-                fieldOldTime.set(j, volScalarField(0*field[j]) );
-                k.set(j, volScalarField(0*field[j]/h));
-                input.set(j, volScalarField(0*field[j]));
+                fieldOldTime.set(j, volScalarField(0*field[j]).clone());
+                k.set(j, volScalarField(0*field[j]/h).clone());
+                input.set(j, volScalarField(0*field[j]).clone());
             }
         }
 

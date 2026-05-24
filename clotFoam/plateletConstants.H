@@ -18,7 +18,7 @@ struct plateletConstants
     {
         "Pdiam",
         dimLength,
-        inputParameters.lookup("Pdiam")
+        inputParameters.get<scalar>("Pdiam")
     };
 
     // Maximum Packing Limit of Platelets
@@ -26,7 +26,7 @@ struct plateletConstants
     {
         "Pmax",
         dimless/dimVolume,
-        inputParameters.lookup("Pmax")
+        inputParameters.get<scalar>("Pmax")
     };
 
     // Platelet Diffusion Constant
@@ -34,7 +34,7 @@ struct plateletConstants
     {
         "Dp",
         dimViscosity,
-        inputParameters.lookup("Dp")
+        inputParameters.get<scalar>("Dp")
     };
 
     // Platelet adhesion binding rate
@@ -42,7 +42,7 @@ struct plateletConstants
     {
         "kAdh",
         dimVolume/dimTime,
-        inputParameters.lookup("kAdh")
+        inputParameters.get<scalar>("kAdh")
     };
 
     // Platelet Cohesion binding rate
@@ -50,7 +50,7 @@ struct plateletConstants
     {
         "kCohPmax",
         dimless/dimTime,
-        inputParameters.lookup("kCohPmax")
+        inputParameters.get<scalar>("kCohPmax")
     };
 
     // Platelet activation rate by ADP k_{adp}^{pla}
@@ -58,7 +58,7 @@ struct plateletConstants
     {
         "kADP_Pla",
         dimless/dimTime,
-        inputParameters.lookup("kADP_Pla")
+        inputParameters.get<scalar>("kADP_Pla")
     };
 
     // Critical concentration of ADP [ADP]^\ast for platelet activation
@@ -66,7 +66,7 @@ struct plateletConstants
     {
         "ADP_ast",
         dimMoles/dimVol,
-        inputParameters.lookup("ADP_ast")
+        inputParameters.get<scalar>("ADP_ast")
     };
 
     // Platelet activation rate by thrombin k_{e2}^{pla}
@@ -74,7 +74,7 @@ struct plateletConstants
     {
         "kE2_Pla",
         dimless/dimTime,
-        inputParameters.lookup("kE2_Pla")
+        inputParameters.get<scalar>("kE2_Pla")
     };
 
     // Critcal concentration of thrombin for platelet activation
@@ -82,7 +82,7 @@ struct plateletConstants
     {
         "E2_ast",
         dimMoles/dimVolume,
-        inputParameters.lookup("E2_ast")
+        inputParameters.get<scalar>("E2_ast")
     };
 
     // Critical concentration of virtual substance eta, eta_ast
@@ -102,7 +102,7 @@ struct plateletConstants
     {
         "l_D_eta",
         dimLength,
-        inputParameters.lookup("l_D_eta")
+        inputParameters.get<scalar>("l_D_eta")
     };
 
     // Normalization constant for binding affinity function g(eta), g0

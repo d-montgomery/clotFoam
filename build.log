@@ -1,0 +1,4 @@
+Building Docker image...
+docker build -t clotfoam:openfoam12 -f docker/Dockerfile .
+ERROR: failed to build: failed to update builder last activity time: open /Users/cageyv/.docker/buildx/activity/.tmp-desktop-linux3470786301: operation not permitted
+make: *** [docker-build] Error 1

@@ -1,0 +1,47 @@
+name: OpenFOAM 12 Build and Test
+
+on:
+  push:
+    branches: [ main, master, develop ]
+  pull_request:
+    branches: [ main, master, develop ]
+  workflow_dispatch:
+
+jobs:
+  build-and-test:
+    runs-on: ubuntu-latest
+    
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@v4
+    
+    - name: Set up Docker Buildx
+      uses: docker/setup-buildx-action@v3
+    
+    - name: Build Docker image
+      run: |
+        docker build -t clotfoam:openfoam12 -f docker/Dockerfile .
+    
+    - name: Run compilation and tests
+      run: |
+        # Run tests and capture exit code
+        docker run --rm \
+          --name clotfoam-test \
+          -v $(pwd)/test-output:/test-output \
+          clotfoam:openfoam12 \
+          /bin/bash -c "
+            /home/ofuser/docker/run-test.sh
+            EXIT_CODE=\$?
+            # Copy logs to mounted volume for CI artifact upload
+            mkdir -p /test-output
+            cp /home/ofuser/tutorials/rectangle2D/log.* /test-output/ 2>/dev/null || true
+            exit \$EXIT_CODE
+          "
+    
+    - name: Upload test logs
+      if: always()
+      uses: actions/upload-artifact@v4
+      with:
+        name: test-logs
+        path: test-output/
+        if-no-files-found: ignore

@@ -1,0 +1,31 @@
+Building Docker image...
+docker build -t clotfoam:openfoam12 -f docker/Dockerfile .
+Running tests in Docker...
+docker run --rm \
+		clotfoam:openfoam12 \
+		/bin/bash /home/ofuser/docker/run-test.sh
+================================================
+OpenFOAM Environment Check
+================================================
+WM_PROJECT_VERSION: v2412
+FOAM_USER_APPBIN: /home/ofuser/OpenFOAM/ofuser-v2412/platforms/linuxARM64GccDPInt32Opt/bin
+================================================
+
+================================================
+Compiling clotFoam solver...
+================================================
+Making dependencies: clotFoam.C
+g++ -std=c++17 -pthread -DOPENFOAM=2412 -DWM_DP -DWM_LABEL_SIZE=32 -Wall -Wextra -Wold-style-cast -Wnon-virtual-dtor -Wno-unused-parameter -Wno-invalid-offsetof -Wno-attributes -Wno-unknown-pragmas -O3 -floop-optimize -falign-loops -falign-labels -falign-functions -falign-jumps  -DNoRepository -ftemplate-depth-100  -I/usr/lib/openfoam/openfoam2412/src/finiteVolume/lnInclude -I/usr/lib/openfoam/openfoam2412/src/meshTools/lnInclude -iquote. -IlnInclude -I/usr/lib/openfoam/openfoam2412/src/OpenFOAM/lnInclude -I/usr/lib/openfoam/openfoam2412/src/OSspecific/POSIX/lnInclude   -fPIC -c clotFoam.C -o Make/linuxARM64GccDPInt32Opt/clotFoam.o
+g++ -std=c++17 -pthread -DOPENFOAM=2412 -DWM_DP -DWM_LABEL_SIZE=32 -Wall -Wextra -Wold-style-cast -Wnon-virtual-dtor -Wno-unused-parameter -Wno-invalid-offsetof -Wno-attributes -Wno-unknown-pragmas -O3 -floop-optimize -falign-loops -falign-labels -falign-functions -falign-jumps  -DNoRepository -ftemplate-depth-100  -I/usr/lib/openfoam/openfoam2412/src/finiteVolume/lnInclude -I/usr/lib/openfoam/openfoam2412/src/meshTools/lnInclude -iquote. -IlnInclude -I/usr/lib/openfoam/openfoam2412/src/OpenFOAM/lnInclude -I/usr/lib/openfoam/openfoam2412/src/OSspecific/POSIX/lnInclude   -fPIC -Xlinker --add-needed -Xlinker --no-as-needed  Make/linuxARM64GccDPInt32Opt/clotFoam.o -L/usr/lib/openfoam/openfoam2412/platforms/linuxARM64GccDPInt32Opt/lib \
+    -lfiniteVolume -lmeshTools -lOpenFOAM -ldl  \
+     -lm -o /home/ofuser/OpenFOAM/ofuser-v2412/platforms/linuxARM64GccDPInt32Opt/bin/clotFoam
+
+================================================
+Compilation successful!
+================================================
+
+================================================
+Running rectangle2D tutorial...
+================================================
+Running blockMesh...
+Running clotFoam (10 timesteps for testing)...

@@ -1,0 +1,8 @@
+services:
+  clotfoam-test:
+    build:
+      context: .
+      dockerfile: docker/Dockerfile
+    image: clotfoam:openfoam12
+    container_name: clotfoam-test
+    command: /bin/bash /home/ofuser/docker/run-test.sh
